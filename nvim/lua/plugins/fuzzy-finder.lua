@@ -21,9 +21,9 @@ return {
         extensions = {
           project = {
             base_dirs = {
-              { "~/library/projects/software", max_depth = 2 },
-              { "~/library/projects/packages" },
-              { "~/library/writings" },
+              { vim.env.XDG_PROJECTS_DIR .. "/software", max_depth = 2 },
+              { vim.env.XDG_PROJECTS_DIR .. "/packages" },
+              { vim.env.XDG_DOCUMENTS_DIR },
             },
           },
           fzf = {},

@@ -9,6 +9,7 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-nvim-lua",
       "hrsh7th/cmp-cmdline",
+      "PaterJason/cmp-conjure",
       "saadparwaiz1/cmp_luasnip",
     },
     event = "InsertEnter",
@@ -28,6 +29,7 @@ return {
           { name = "path" },
           { name = "nvim_lua" },
           { name = "nvim_lsp" },
+          { name = "conjure" },
         },
 
         mapping = {
@@ -49,6 +51,44 @@ return {
         },
       })
     end,
+  },
+
+  {
+    "folke/trouble.nvim",
+    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    cmd = "Trouble",
+    keys = {
+      {
+        "<leader>xx",
+        "<cmd>Trouble diagnostics toggle<cr>",
+        desc = "Diagnostics (Trouble)",
+      },
+      {
+        "<leader>xX",
+        "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+        desc = "Buffer Diagnostics (Trouble)",
+      },
+      {
+        "<leader>cs",
+        "<cmd>Trouble symbols toggle focus=false<cr>",
+        desc = "Symbols (Trouble)",
+      },
+      {
+        "<leader>cl",
+        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+        desc = "LSP Definitions / references / ... (Trouble)",
+      },
+      {
+        "<leader>xL",
+        "<cmd>Trouble loclist toggle<cr>",
+        desc = "Location List (Trouble)",
+      },
+      {
+        "<leader>xQ",
+        "<cmd>Trouble qflist toggle<cr>",
+        desc = "Quickfix List (Trouble)",
+      },
+    },
   },
 
   -- A linting engine, a DAP client, and an LSP client entered into a bar.
@@ -80,23 +120,6 @@ return {
         local opts = { noremap = true, silent = true }
 
         -- See `:help vim.lsp.*` for documentation on any of the below functions
-        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-        vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-        vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
-        vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
-        vim.keymap.set("n", "<space>wl", print(vim.inspect(vim.lsp.buf.list_workspace_folders, opts)))
-        vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, opts)
-        vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
-        vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, opts)
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-        vim.keymap.set("n", "<space>e", vim.lsp.diagnostic.show_line_diagnostics, opts)
-        vim.keymap.set("n", "[d", vim.lsp.diagnostic.goto_prev, opts)
-        vim.keymap.set("n", "]d", vim.lsp.diagnostic.goto_next, opts)
-        vim.keymap.set("n", "<space>q", vim.lsp.diagnostic.set_loclist, opts)
-        vim.keymap.set("n", "<space>f", vim.lsp.buf.formatting, opts)
       end
 
       local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -106,12 +129,20 @@ return {
       -- Enable the following language servers
       local servers = {
         "clangd",
+        "dockerls",
         "rust_analyzer",
+        "gopls",
         "pyright",
+        "jsonls",
         "ts_ls",
-        "nixd",
+        "nil_ls",
         "lua_ls",
         "rubocop",
+        "terraformls",
+        "texlab",
+        "textlsp",
+        "tinymist",
+        "vale_ls",
       }
       for _, lsp in ipairs(servers) do
         nvim_lsp[lsp].setup({

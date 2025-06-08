@@ -110,6 +110,18 @@ return {
     end,
   },
 
+  {
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    keys = {
+      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+      { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+    },
+  },
+
   -- Oil and vinegar goes well as oil and your computer.
   {
     "stevearc/oil.nvim",
@@ -123,6 +135,9 @@ return {
       columns = { "icon", "permissions" },
       view_options = {
         show_hidden = true,
+      },
+      keymaps = {
+        ["<C-=>"] = "actions.open_terminal",
       },
     },
 
@@ -143,13 +158,13 @@ return {
     version = ">=1.0.0",
     lazy = _fds.utils.to_bool(os.getenv("WEZTERM_CONFIG_DIR")),
     keys = {
-      { "<C-h>",
+      { "<C-H>",
         function() require("smart-splits").move_cursor_left() end, { desc = "smart-splits move cursor left" } },
-      { "<C-j>",
+      { "<C-J>",
         function() require("smart-splits").move_cursor_down() end, { desc = "smart-splits move cursor down" } },
-      { "<C-k>",
+      { "<C-K>",
         function() require("smart-splits").move_cursor_up() end, { desc = "smart-splits move cursor up" } },
-      { "<C-l>",
+      { "<C-L>",
         function() require("smart-splits").move_cursor_right() end, { desc = "smart-splits move cursor right" } },
       { "<C-\\>",
         function() require("smart-splits").move_cursor_previous() end, { desc = "smart-splits move cursor previous" } },
@@ -161,5 +176,15 @@ return {
     version = ">=2.0.0",
     dependencies = { 'kkharji/sqlite.lua' },
     priority = 10000,
+  },
+
+  -- Forcing your editor to socialize with the langauges more.
+  {
+    "Olical/conjure",
+    lazy = true,
+    init = function ()
+      vim.g["conjure#filetype#scheme"] = "conjure.client.guile.socket"
+      vim.g["conjure#extract#tree_sitter#enabled"] = true
+    end
   },
 }
