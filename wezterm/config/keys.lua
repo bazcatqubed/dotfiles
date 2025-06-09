@@ -151,7 +151,8 @@ function module.apply_to_config(config)
           patterns = {
             "[0-9a-f]{7,40}", -- SHA1 hashes, usually used for Git.
             "[0-9a-f]{7,64}", -- SHA256 hashes, used often for getting hashes for Guix packaging.
-            "sha256-[[:alpha:][:digit:]-=+/?]{44}", -- SHA256 hashes in Base64, used often in getting hashes for Nix packaging.
+            "sha256-[[:alpha:][:digit:]-=+/?]{44}", -- SRI SHA256 hashes in Base64, used often in getting hashes for Nix packaging.
+            "sha512-[[:alpha:][:digit:]-=+/?]{88}", -- SRI SHA512 hashes in Base64, used often in getting hashes for Nix packaging.
             "[[:alpha:][:digit:]-=+/?]{44,64}",
           },
         }),

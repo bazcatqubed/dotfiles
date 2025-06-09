@@ -8,6 +8,7 @@ function module.apply_to_config(config)
     "[0-9a-f]{7,40}", -- SHA1 hashes, usually used for Git.
     "[0-9a-f]{7,64}", -- SHA256 hashes, used often for getting hashes for Guix packaging.
     "sha256-.{44,128}", -- SHA256 hashes in Base64, used often in getting hashes for Nix packaging.
+    "sha512-[0-9A-Za-z=_]{40,128}" -- SRI SHA512 hashes typically used in Nix fixed-output derivations.
   }
 
   -- Don't tease me with the upcoming releases, man.
