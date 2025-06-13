@@ -22,8 +22,10 @@ function module.apply_to_config(config)
   end
 
   -- Use some IME.
-  config.use_ime = true
-  config.xim_im_name = "ibus"
+  if os.getenv("XDG_SESSION_DESKTOP") == "gnome" then
+    config.use_ime = true
+    config.xim_im_name = "ibus"
+  end
 
   -- Set up the visual bell.
   config.audible_bell = "SystemBeep"

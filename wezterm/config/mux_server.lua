@@ -13,8 +13,6 @@ function module.apply_to_config(config)
       bootstrap_via_ssh = "plover@plover.foodogsquared.one",
     },
   }
-
-  config.default_gui_startup_args = { "connect", "unix" }
   return config
 end
 
