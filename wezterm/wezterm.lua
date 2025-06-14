@@ -6,6 +6,7 @@ require("config/base").apply_to_config(config)
 require("config/keys").apply_to_config(config)
 require("config/appearance").apply_to_config(config)
 require("config/mux_server").apply_to_config(config)
+require("config/exec_domain").apply_to_config(config)
 
 local wezterm = require("wezterm")
 
