@@ -25,14 +25,4 @@ wezterm.plugin
     log_level = 'info',
   })
 
-wezterm.plugin
-  .require("https://github.com/yriveiro/wezterm-status")
-  .apply_to_config(config, {
-    cells = {
-      battery = { enabled = true },
-      date = { format = "%F %M:%h" },
-      mode = { enabled = true },
-    },
-  })
-
 return config

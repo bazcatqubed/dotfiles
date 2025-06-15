@@ -14,7 +14,7 @@ function module.apply_to_config(config)
 
   wezterm.on("view-last-output-in-new-pane", function(_, pane)
     local zones = pane:get_semantic_zones("Output")
-    local last_zone = zones[#zones - 1]
+    local last_zone = zones[#zones]
 
     if not last_zone then
       return nil
