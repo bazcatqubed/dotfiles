@@ -90,6 +90,15 @@ local function make_podman_label_func(id)
   end
 end
 
+local function make_systemd_nspawn_label_func(machine)
+  return function (_)
+    return wezterm.format {
+      { Foreground = { AnsiColor = "Green" } },
+      { Text = string.format("%s (%s)", machine.os, machine.version) },
+    }
+  end
+end
+
 local function make_podman_fixup_func(id)
   return function(cmd)
     cmd.args = cmd.args or { "/bin/sh" }
@@ -144,6 +153,19 @@ local function make_toolbox_fixup_func(name)
     local wrapped = {
       "toolbox",
       "enter",
+      name,
+    }
+
+    cmd.args = wrapped
+    return cmd
+  end
+end
+
+local function make_systemd_nspawn_fixup_func(name)
+  return function (cmd)
+    local wrapped = {
+      "machinectl",
+      "shell",
       name,
     }
 
@@ -254,6 +276,34 @@ function M.apply_to_config(config)
     end
   end
   ::end_podman::
+
+  if os.execute("machinectl --version") and os.execute("systemd-nspawn --version") then
+    local success, stdout, _ = wezterm.run_child_process {
+      "machinectl",
+      "list",
+      "--output",
+      "json",
+    }
+
+    if not success then
+      goto end_systemd_nspawn
+    end
+
+    local machines = wezterm.json_parse(stdout)
+
+    for _, machine in ipairs(machines) do
+      local name = machine.machine
+      table.insert(
+        config.exec_domains,
+        wezterm.exec_domain(
+          'systemd-nspawn:' .. name,
+          make_systemd_nspawn_fixup_func(name),
+          make_systemd_nspawn_label_func(machine)
+        )
+      )
+    end
+  end
+  ::end_systemd_nspawn::
 
   return config
 end
