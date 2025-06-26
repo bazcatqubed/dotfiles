@@ -6,10 +6,18 @@
 
 with pkgs;
 
+let
+  sbcl' = sbcl.withPackages (ps: with ps; [
+    swank
+  ]);
+in
 mkShell {
   packages = [
     python3
+    reuse
     stow
+    sbcl'
+    roswell # Common Lisp
 
     # Language servers for...
     lua-language-server # ...Lua.
