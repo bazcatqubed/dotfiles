@@ -1,0 +1,72 @@
+#!/usr/bin/env -S nu --stdin
+
+# Annotate all of the given files in the current Git directory with all of its
+# available metadata within the blob objects.
+#
+# This is a naive implementation that is best assumed to be run in a
+# single-person project with consistent metadata in its Git history.
+def main [
+    ...paths,
+
+    --reuse-args: list<string>, # Additional arguments to be passed to the generated `reuse` command.
+
+    --license: string, # The license to be assigned to the files.
+
+    --style: string, # The comment style to be used.
+
+    --dry-run, # Prints the generated commands instead of executing it.
+
+    --json, # Generates a JSON object usable for external scripts.
+
+    --force-current-date = true, # Force the current date for the end year of the range.
+] {
+    let commands = $paths | par-each { |f|
+        # TODO: Get signed-off contributors
+        let blobMetadata = git log --pretty="%H--%aI--%aN--%aE" -- $f | lines
+            | split column "--" hash date author email
+            | default --empty [
+                {
+                    date: (date now | format date),
+                    author: (git config user.name),
+                    email: (git config user.email),
+                }
+            ]
+
+        let firstBlob = $blobMetadata | get 0
+        let date = match $force_current_date {
+            true => ($blobMetadata | get (($blobMetadata | length) - 1) | get date | prepend (date now | format date)),
+            false => ($blobMetadata | get 0 (($blobMetadata | length) - 1) | get date),
+        } | each { |d| $d | date from-human | format date "%Y" } | uniq
+
+        mut command = [
+            "reuse"
+            "annotate"
+            "--copyright"
+            $"($firstBlob | get author) <($firstBlob | get email)>"
+            "--year"
+            ($date | reverse | str join "-")
+        ]
+
+        if $license != null {
+            $command ++= [ "--license" $license ]
+        }
+
+        if $style != null {
+            $command ++= [ "--style" $style ]
+        }
+
+        $command ++= [ $f ]
+
+        if $dry_run {
+            print ($command | str join " ")
+        } else if $json {
+            $command
+        } else {
+            run-external ...$command
+        }
+    }
+
+    if $json {
+        $commands | to json
+    }
+}
