@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# SPDX-FileCopyrightText: 2020-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # A simple setup script for the packages.
 # There should be a file named `locations.json` in this setup where it contains a top-level associative array with the packages as the key and their target path as the value.
 # Feel free to modify it accordingly.

@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# SPDX-FileCopyrightText: 2021-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # TODO:
 # Given a OPML file, convert the OPML into a `urls` file compatible for newsboat.
 # It could also accept an OPML through stdin.

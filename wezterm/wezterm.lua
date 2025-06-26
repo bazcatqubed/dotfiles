@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2022-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 local config = require("wezterm").config_builder()
 config:set_strict_mode(true)
 

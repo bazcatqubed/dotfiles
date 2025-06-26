@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 $env.config.menus = $env.config.menus | append [
     {
         name: vars_menu

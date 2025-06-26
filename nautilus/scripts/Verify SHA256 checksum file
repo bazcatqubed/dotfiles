@@ -1,5 +1,9 @@
 #!/usr/bin/env nu
 
+# SPDX-FileCopyrightText: 2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Verify `sha256checksum.txt` within its current directory.
 def main [...rest: string] {
     let file = $"($env.NAUTILUS_SCRIPT_CURRENT_URI? | default $env.PWD)/sha256checksum.txt"

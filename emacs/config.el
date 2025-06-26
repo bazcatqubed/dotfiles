@@ -1,3 +1,7 @@
+;;; SPDX-FileCopyrightText: 2020-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+;;;
+;;; SPDX-License-Identifier: GPL-3.0-or-later
+
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom

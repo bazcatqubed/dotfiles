@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2021-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 -- CREDITS: pwntester/nautilus.nvim
 local lush = require("lush")
 local hsl = lush.hsluv

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 " This enforces Tridactyl to only have this file as the source of truth.
 " Also the first time you open Firefox with this Tridactyl configuration, you
 " might want to restart immediately since the autocontainers are not in

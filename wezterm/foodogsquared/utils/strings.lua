@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 --- A bunch of string-related utilities. A lot of them are based from
 --- http://lua-users.org/wiki/StringRecipes
 local M = {}

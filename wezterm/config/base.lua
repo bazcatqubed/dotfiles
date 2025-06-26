@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2023-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 -- A local jumpstart for creating my base configuration.
 local module = {}
 

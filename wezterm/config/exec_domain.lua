@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 local utils = require('foodogsquared.utils.init')
 local fds_strings = require('foodogsquared.utils.strings')
 local wezterm = require("wezterm")

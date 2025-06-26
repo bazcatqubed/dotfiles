@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2023-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 return {
   -- A completion engine.
   -- nvim-cmp is mostly explicit by making the configuration process manual unlike bigger plugins like CoC

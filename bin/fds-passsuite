@@ -1,5 +1,9 @@
 #!/usr/bin/env nu
 
+# SPDX-FileCopyrightText: 2024-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # This script also accepts several environment variables overriding the default
 # arguments in each of the subcommand.
 #

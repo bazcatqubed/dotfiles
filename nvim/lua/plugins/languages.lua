@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2023-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 -- A bunch of plugins for programming languages support.
 return {
   -- EditorConfig plugin.

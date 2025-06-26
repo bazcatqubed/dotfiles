@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 local function get_note(subfolder)
   return vim.fn.expand("~/Documents/Notes/") .. subfolder
 end

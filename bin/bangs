@@ -1,5 +1,9 @@
 #!/usr/bin/env nix-shell
-#! nix-shell -i oil -p coreutils ripgrep handlr gnused xxd
+#! nix-shell -i oils-for-unix -p coreutils ripgrep handlr gnused xxd
+
+# SPDX-FileCopyrightText: 2021-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
 
 # A ripoff from Duckduckgo bangs.
 

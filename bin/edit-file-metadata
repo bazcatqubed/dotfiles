@@ -1,5 +1,9 @@
 #!/usr/bin/env oil
 
+# SPDX-FileCopyrightText: 2020-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # A quick script on moving a file with embedded data.
 # It can only detect certain files and write the metadata with a certain program.
 # For the argument, it needs the path of the files to be moved.

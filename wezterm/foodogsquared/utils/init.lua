@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 local M = {}
 
 --- Return the basename of a given filepath equivalent to `basename(3)`.

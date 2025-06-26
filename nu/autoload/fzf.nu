@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # Nushell module based from the `fzf --bash` output.
 #
 # This port takes some liberty from the Bash script and does not have the same

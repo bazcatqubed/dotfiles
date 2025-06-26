@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 use std/dirs
 use std/dirs shells-aliases *
 

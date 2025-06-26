@@ -1,0 +1,26 @@
+version = 1
+
+[[annotations]]
+path = [ "emacs/snippets/**/*", "emacs/templates/**/*" ]
+SPDX-FileCopyrightText = "2020-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = [ "bleachbit/cleaners/*.xml" ]
+SPDX-FileCopyrightText = "2025 Gabriel Arazas <foodogsquared@foodogsquared.one>"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = [ "flake.lock" ]
+SPDX-FileCopyrightText = "2020-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = [ "nvim/lazy-lock.json" ]
+SPDX-FileCopyrightText = "2024-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = [ "Makefile", "bangs/*", ".vtsm/*.json", "treefmt.toml", ".gitignore", ".mailmap", ".editorconfig" ]
+SPDX-FileCopyrightText = "2020-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>"
+SPDX-License-Identifier = "MIT"

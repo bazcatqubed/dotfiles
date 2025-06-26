@@ -1,6 +1,10 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i oil -p coreutils sqlite unzip ripgrep jq file
 
+# SPDX-FileCopyrightText: 2021-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # Convert a Newpipe database (assuming it was exported within the app) into OPML v2.
 
 # Dependencies:

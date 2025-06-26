@@ -1,6 +1,10 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i oil -p coreutils curl jq
 
+# SPDX-FileCopyrightText: 2021-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # Generate the config with Duckduckgo bangs.
 # Very useful if you really want just to search as you would in Duckduckgo.
 

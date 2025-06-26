@@ -1,6 +1,10 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i oil -p coreutils moreutils ffmpeg gnused ripgrep file
 
+# SPDX-FileCopyrightText: 2021-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 shopt --set strict:all
 
 const show_help = "A small script for splitting files into tracks, perfect for full album releases and audiobooks.

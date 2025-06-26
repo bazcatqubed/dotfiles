@@ -1,6 +1,10 @@
 #!/usr/bin/env nix-shell
 #! nix-shell --pure -i bash -p curl jq fzf coreutils findutils iputils cacert
 
+# SPDX-FileCopyrightText: 2021-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # A quick command line interface for creating a gitignore with the API from https://gitignore.io.
 # This script comes with a simple caching to avoid creating too much requests.
 

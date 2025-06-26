@@ -1,5 +1,9 @@
 #!/usr/bin/env -S nu --stdin
 
+# SPDX-FileCopyrightText: 2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # Annotate all of the given files in the current Git directory with all of its
 # available metadata within the blob objects.
 #

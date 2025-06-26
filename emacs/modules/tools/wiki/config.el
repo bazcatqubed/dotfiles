@@ -1,3 +1,7 @@
+;;; SPDX-FileCopyrightText: 2021-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+;;;
+;;; SPDX-License-Identifier: GPL-3.0-or-later
+
 ;;; tools/wiki/config.el --- The configuration for foo-dogsquared's wiki as a module.
 ;;; -*- lexical-binding: t; -*-
 

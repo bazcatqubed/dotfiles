@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2023-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 return {
   -- Enable visuals for addition/deletion of lines in the gutter (side) similar
   -- to Visual Studio Code.

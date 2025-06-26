@@ -1,5 +1,9 @@
 #!/usr/bin/env nu
 
+# SPDX-FileCopyrightText: 2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 def main [...rest: string] {
     let files = $env.NAUTILUS_SCRIPT_SELECTED_FILE_PATHS? | default $rest | split row "\n" | filter { |x| $x | str trim | is-not-empty}
     $files | par-each { |f|

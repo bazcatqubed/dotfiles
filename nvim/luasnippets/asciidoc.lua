@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2022-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 function max_asciidoc_header(level)
   return math.min(level, 6)
 end

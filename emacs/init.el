@@ -1,3 +1,7 @@
+;;; SPDX-FileCopyrightText: 2020-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+;;;
+;;; SPDX-License-Identifier: GPL-3.0-or-later
+
 ;;; init.el -*
 
 ;; This file controls what Doom modules are enabled and what order they load in.
