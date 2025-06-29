@@ -66,11 +66,13 @@ $env.config.keybindings = $env.config.keybindings | append [
         mode: [emacs vi_normal vi_insert]
         event: {
             send: ExecuteHostCommand
-            cmd: "commandline edit --insert (
+            cmd: r#'commandline edit --insert (
                 __fzf_select '--multi'
                 | lines
+                | each { |s| $"'($s)'" }
                 | str join ' '
-            )"
+            )
+            '#
         }
     }
 
@@ -81,11 +83,13 @@ $env.config.keybindings = $env.config.keybindings | append [
         mode: [emacs vi_normal vi_insert]
         event: {
             send: ExecuteHostCommand
-            cmd: "commandline edit --insert (
+            cmd: r#'commandline edit --insert (
                 __fzf_select '--multi' '--walker-root=../'
                 | lines
+                | each { |s| $"'($s)'" }
                 | str join ' '
-            )"
+            )
+            '#
         }
     }
 
