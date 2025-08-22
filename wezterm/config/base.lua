@@ -38,6 +38,8 @@ function module.apply_to_config(config)
     fade_out_duration_ms = 50,
   }
 
+  config.unzoom_on_switch_pane = false
+
   return config
 end
 

@@ -8,14 +8,6 @@ local io = require("io")
 local os = require("os")
 
 function module.apply_to_config(config)
-  wezterm.on("update-right-status", function(window, _)
-    local key = window:active_key_table()
-    if key then
-      key = "TABLE: " .. key
-    end
-    window:set_right_status(key or "")
-  end)
-
   wezterm.on("view-last-output-in-new-pane", function(_, pane)
     local zones = pane:get_semantic_zones("Output")
     local last_zone = zones[#zones]

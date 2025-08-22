@@ -26,7 +26,7 @@ end
 local function podman_list_custom_images(data)
   local containers = {}
   for _, image in ipairs(data) do
-    if fds_strings.starts_with(image.Image, "ghcr.io/foo-dogsquared/nixos-config") then
+    if fds_strings.starts_with(image.Image, "ghcr.io/bazcatqubed/nixos-config") then
       containers[image.Id] = image.Names[0]
     end
   end

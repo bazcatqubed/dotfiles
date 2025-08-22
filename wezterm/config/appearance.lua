@@ -66,6 +66,8 @@ function module.apply_to_config(config)
   -- Disable some more annoyances.
   config.enable_tab_bar = true
   config.tab_bar_at_bottom = false
+  config.show_close_tab_button_in_tabs = false
+  config.quick_select_remove_styling = true
   config.window_decorations = "NONE"
 
   -- Configuring the appearance of the tab bar.
@@ -80,6 +82,11 @@ function module.apply_to_config(config)
     right = "1cell",
     top = 0,
     bottom = 0,
+  }
+
+  config.colors = {
+    compose_cursor = config.color_schemes[config.color_scheme].brights[3],
+    quick_select_label_fg = { Color = config.color_schemes[config.color_scheme].brights[1] },
   }
 
   return config
