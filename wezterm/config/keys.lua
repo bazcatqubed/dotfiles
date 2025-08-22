@@ -15,8 +15,23 @@ if wezterm.gui then
   copy_mode = wezterm.gui.default_key_tables().copy_mode
   table.insert(copy_mode, {
     key = "z",
-    mods = keymod,
+    mods = "CTRL",
     action = act.CopyMode({ MoveBackwardZoneOfType = "Output" }),
+  })
+  table.insert(copy_mode, {
+    key = "z",
+    mods = keymod,
+    action = act.CopyMode({ MoveForwardZoneOfType = "Output" }),
+  })
+  table.insert(copy_mode, {
+    key = "v",
+    mods = "NONE",
+    action = act.CopyMode { SetSelectionMode = "SemanticZone" },
+  })
+  table.insert(copy_mode, {
+    key = "v",
+    mods = "CTRL",
+    action = act.CopyMode { SetSelectionMode = "Line" },
   })
 end
 
@@ -66,7 +81,7 @@ function module.apply_to_config(config)
       key = "p",
       mods = "LEADER",
       action = act.ActivateKeyTable({
-        name = "pane_navigation",
+        name = "pane",
         timeout_milliseconds = 1000,
         replace_current = true,
         one_shot = true,
@@ -77,19 +92,20 @@ function module.apply_to_config(config)
       key = "r",
       mods = "LEADER",
       action = act.ActivateKeyTable({
-        name = "resize_pane",
+        name = "resize",
         replace_current = true,
         one_shot = false,
       }),
     },
 
-    { key = "h", mods = keymod, action = act.ActivatePaneDirection("Left") },
-    { key = "l", mods = keymod, action = act.ActivatePaneDirection("Right") },
+    { key = "h", mods = keymod, action = act.ActivatePaneDirection("Next") },
+    { key = "l", mods = keymod, action = act.ActivatePaneDirection("Prev") },
     { key = "LeftArrow", mods = keymod, action = act.ActivatePaneDirection("Left") },
     { key = "DownArrow", mods = keymod, action = act.ActivatePaneDirection("Down") },
     { key = "UpArrow", mods = keymod, action = act.ActivatePaneDirection("Up") },
     { key = "RightArrow", mods = keymod, action = act.ActivatePaneDirection("Right") },
     { key = "^", mods = keymod, action = act.ActivateLastTab },
+    { key = "b", mods = keymod, action = act.RotatePanes 'CounterClockwise' },
 
     -- More pane-related niceties.
     { key = "f", mods = "LEADER", action = act.TogglePaneZoomState },
@@ -104,7 +120,7 @@ function module.apply_to_config(config)
       key = "t",
       mods = "LEADER",
       action = act.ActivateKeyTable({
-        name = "tab_navigation",
+        name = "tab",
         timeout_milliseconds = 1000,
         replace_current = true,
         one_shot = true,
@@ -187,16 +203,16 @@ function module.apply_to_config(config)
       { key = "f", action = act.Search({ CaseSensitiveString = "" }) },
     },
 
-    pane_navigation = {
+    pane = {
       { key = "d", action = act.CloseCurrentPane({ confirm = false }) },
-      { key = "h", action = act.ActivatePaneDirection("Left") },
+      { key = "h", action = act.ActivatePaneDirection("Prev") },
       { key = "j", action = act.ActivatePaneDirection("Down") },
       { key = "k", action = act.ActivatePaneDirection("Up") },
-      { key = "l", action = act.ActivatePaneDirection("Right") },
+      { key = "l", action = act.ActivatePaneDirection("Next") },
       { key = "n", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
     },
 
-    tab_navigation = {
+    tab = {
       { key = "d", action = act.CloseCurrentTab({ confirm = false }) },
       { key = "h", action = act.ActivateTabRelative(-1) },
       { key = "j", action = act.ActivateTab(-1) },
@@ -205,7 +221,7 @@ function module.apply_to_config(config)
       { key = "n", action = act.SpawnTab("CurrentPaneDomain") },
     },
 
-    resize_pane = {
+    resize = {
       { key = "h", action = act.AdjustPaneSize({ "Left", 1 }) },
       { key = "j", action = act.AdjustPaneSize({ "Down", 1 }) },
       { key = "k", action = act.AdjustPaneSize({ "Up", 1 }) },
