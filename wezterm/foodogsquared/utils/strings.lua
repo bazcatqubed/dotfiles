@@ -22,4 +22,12 @@ function M.ends_with(str, ending)
    return ending == "" or str:sub(-#ending) == ending
 end
 
+---Returns an escaped version of the string normally used for string functions
+---requiring a pattern string (e.g., `gsub`).
+---@param str string
+---@return string
+function M.escape_pattern(str)
+  return str:gsub("([^%w])", "%%%1")
+end
+
 return M
