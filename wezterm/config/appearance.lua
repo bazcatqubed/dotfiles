@@ -87,6 +87,13 @@ function module.apply_to_config(config)
   config.colors = {
     compose_cursor = config.color_schemes[config.color_scheme].brights[3],
     quick_select_label_fg = { Color = config.color_schemes[config.color_scheme].brights[1] },
+
+    tab_bar = {
+      active_tab = {
+        bg_color = config.color_schemes[config.color_scheme].brights[1],
+        fg_color = config.color_schemes[config.color_scheme].foreground,
+      },
+    },
   }
 
   return config
