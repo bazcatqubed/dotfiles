@@ -5,6 +5,8 @@ local M = {}
 local wezterm = require("wezterm")
 local utils = require("foodogsquared.utils.init")
 local fds_strings = require("foodogsquared.utils.strings")
+local fds_lists = require("foodogsquared.utils.lists")
+local fds_wezterm = require("foodogsquared.utils.wezterm")
 
 local SOLID_LEFT_ARROW = utf8.char(0xe0b2)
 local SOLID_RIGHT_ARROW = utf8.char(0xe0b0)
@@ -38,10 +40,18 @@ function convert_to_elements(is_left, separator, colors, text_fg, cells)
 end
 
 function M.apply_to_config(config)
-  config.show_tabs_in_tab_bar = false
+  config.show_tabs_in_tab_bar = true
   config.show_new_tab_button_in_tab_bar = false
 
   config.status_update_interval = 1000
+
+  wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+    local pane = tab.active_pane
+    local title = utils.basename(pane.foreground_process_name)
+    return {
+      {Text=" " .. title .. " "},
+    }
+  end)
 
   wezterm.on('update-status', function(window, pane)
     -- Each element holds the text for a cell in a "powerline" style << fade
@@ -51,6 +61,30 @@ function M.apply_to_config(config)
     local keytable = window:active_key_table() or "normal"
     if keytable then
       table.insert(left_cells, keytable:gsub("_mode", ""):upper())
+    end
+
+    local tab = pane:tab()
+    if tab then
+      local active_pane = fds_wezterm.active_pane_with_info(tab)
+      local active_tab
+
+      for _, tab_with_info in pairs(window:mux_window():tabs_with_info()) do
+        if tab_with_info.is_active then
+          active_tab = tab_with_info
+          goto end_tab
+        end
+      end
+      ::end_tab::
+
+      local str = active_tab.index + 1 .. ':' .. active_pane.index + 1
+      local has_active_zoomed_pane = fds_lists.any(function (_, pane_attr)
+        return pane_attr.is_zoomed and pane_attr.is_active
+      end, pane:tab():panes_with_info())
+      if has_active_zoomed_pane then
+        str = str .. '+'
+      end
+
+      table.insert(left_cells, str)
     end
 
     -- Figure out the cwd and host of the current pane.
@@ -83,7 +117,7 @@ function M.apply_to_config(config)
       table.insert(cells, user_string)
     end
 
-    local date = wezterm.strftime '%a %b %-d %H:%M'
+    local date = wezterm.strftime '%c'
     table.insert(cells, date)
 
     if window:leader_is_active() then
@@ -100,7 +134,10 @@ function M.apply_to_config(config)
     local accents = wezterm.color.gradient({
       orientation = "Vertical",
       blend = "Oklab",
-      colors = { accent_color:lighten(0.1), accent_color:darken(0.33) }
+      colors = {
+        accent_color:darken(0.33),
+        accent_color:lighten(0.1),
+      }
     }, 4)
 
     window:set_right_status(wezterm.format(convert_to_elements(false, SOLID_LEFT_ARROW, accents, text_fg, cells)))

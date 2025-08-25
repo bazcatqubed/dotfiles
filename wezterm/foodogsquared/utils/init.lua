@@ -15,7 +15,7 @@ end
 --- Return a boolean indicating if the given executable is found in $PATH.
 ---
 --- @param exe? string
---- @return boolean
+--- @return boolean?
 function M.executable(exe)
   return os.execute(exe)
 end
@@ -53,7 +53,7 @@ end
 
 ---Create a conditional where it returns either of the given values whether the
 ---condition returns true or false.
----@param cond bool
+---@param cond boolean
 ---@param T any
 ---@param F any
 ---@return any
