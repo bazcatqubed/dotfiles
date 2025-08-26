@@ -73,7 +73,7 @@ function module.apply_to_config(config)
   -- Configuring the appearance of the tab bar.
   config.window_frame = {
     font = config.font,
-    font_size = config.font_size - 2,
+    font_size = config.font_size,
   }
 
   -- Configuring the windows padding.

@@ -48,7 +48,7 @@ end
 ---Return the user name from the current Wezterm environment.
 ---@return string
 function M.get_user()
-  return os.getenv("USER") or os.getenv("LOGNAME") or os.getenv("USERNAME") or ""
+  return os.getenv("USER") or os.getenv("LOGNAME") or os.getenv("USERNAME") or nil
 end
 
 ---Create a conditional where it returns either of the given values whether the

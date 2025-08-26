@@ -5,8 +5,6 @@ local M = {}
 local wezterm = require("wezterm")
 local utils = require("foodogsquared.utils.init")
 local fds_strings = require("foodogsquared.utils.strings")
-local fds_lists = require("foodogsquared.utils.lists")
-local fds_wezterm = require("foodogsquared.utils.wezterm")
 
 local SOLID_LEFT_ARROW = utf8.char(0xe0b2)
 local SOLID_RIGHT_ARROW = utf8.char(0xe0b0)
@@ -58,15 +56,30 @@ function M.apply_to_config(config)
     local cells = {}
     local left_cells = {}
 
+    -- The mode indicator inspired from Neovim's very own.
     local keytable = window:active_key_table() or "normal"
     if keytable then
       table.insert(left_cells, keytable:gsub("_mode", ""):upper())
     end
 
+    -- The position indicator. The notation is also inspired from Neovim's
+    -- version where it is basically the equivalent of (TAB:PANE/TOTAL_PANE).
+    --
+    -- Several things to note:
+    -- - The plus sign (+) is an indicator if the active pane is zoomed.
     local tab = pane:tab()
     if tab then
-      local active_pane = fds_wezterm.active_pane_with_info(tab)
-      local active_tab
+      local panes = tab:panes_with_info()
+
+      local active_pane, active_tab
+
+      for _, pane_with_info in pairs(panes) do
+        if pane_with_info.is_active then
+          active_pane = pane_with_info
+          goto end_pane
+        end
+      end
+      ::end_pane::
 
       for _, tab_with_info in pairs(window:mux_window():tabs_with_info()) do
         if tab_with_info.is_active then
@@ -76,11 +89,8 @@ function M.apply_to_config(config)
       end
       ::end_tab::
 
-      local str = active_tab.index + 1 .. ':' .. active_pane.index + 1
-      local has_active_zoomed_pane = fds_lists.any(function (_, pane_attr)
-        return pane_attr.is_zoomed and pane_attr.is_active
-      end, pane:tab():panes_with_info())
-      if has_active_zoomed_pane then
+      local str = active_tab.index + 1 .. ':' .. active_pane.index + 1 .. '/' .. #panes
+      if active_pane.is_zoomed then
         str = str .. '+'
       end
 
@@ -97,7 +107,7 @@ function M.apply_to_config(config)
 
       if type(cwd_uri) == 'userdata' then
         cwd = cwd_uri.file_path:gsub(fds_strings.escape_pattern(wezterm.home_dir), "~")
-        user_string = (cwd_uri.username or utils.get_user()) .. '@' .. cwd_uri.host or wezterm.hostname()
+        user_string = utils.cond(cwd_uri.username ~= "", cwd.username, utils.get_user()) .. '@' .. cwd_uri.host or wezterm.hostname()
       else
         cwd_uri = cwd_uri:sub(8)
         local slash = cwd_uri:find '/'
@@ -117,17 +127,21 @@ function M.apply_to_config(config)
       table.insert(cells, user_string)
     end
 
+    -- The date component.
     local date = wezterm.strftime '%c'
     table.insert(cells, date)
 
+    -- A leader key indicator.
     if window:leader_is_active() then
       table.insert(cells, "LEADER")
     end
 
+    -- Optional battery component.
     for _, b in ipairs(wezterm.battery_info()) do
       table.insert(cells, string.format('%.0f%%', b.state_of_charge * 100))
     end
 
+    -- Setting up the components themselves.
     local colors = window:effective_config().resolved_palette
     local text_fg = colors.foreground
     local accent_color = wezterm.color.parse(colors.brights[1])
