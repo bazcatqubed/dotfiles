@@ -6,8 +6,17 @@ local wezterm = require("wezterm")
 local utils = require("foodogsquared.utils.init")
 local fds_strings = require("foodogsquared.utils.strings")
 
+local LEADER_CHAR_INDICATOR = "🏳️"
+local ZOOMED_CHAR_INDICATOR = "+"
 local SOLID_LEFT_ARROW = utf8.char(0xe0b2)
 local SOLID_RIGHT_ARROW = utf8.char(0xe0b0)
+
+-- TODO: Update to consider XDG user dirs from xdg-dirs.dirs file.
+local prefixes = {
+  { wezterm.home_dir .. '/Projects',  "$PR" },
+  { wezterm.home_dir .. '/Documents', "$D" },
+  { wezterm.home_dir, "~" },
+}
 
 function convert_to_elements(is_left, separator, colors, text_fg, cells)
   local elements = {}
@@ -56,18 +65,23 @@ function M.apply_to_config(config)
     local cells = {}
     local left_cells = {}
 
-    -- The mode indicator inspired from Neovim's very own.
-    local keytable = window:active_key_table() or "normal"
-    if keytable then
-      table.insert(left_cells, keytable:gsub("_mode", ""):upper())
+    -- The mode indicator inspired from Neovim's very own. It also features if
+    -- the leader key is active.
+    local mode_indicator = window:active_key_table() or "normal"
+    if mode_indicator then
+      table.insert(left_cells, mode_indicator:gsub("_mode", ""):upper())
     end
 
     -- The position indicator. The notation is also inspired from Neovim's
-    -- version where it is basically the equivalent of (TAB:PANE/TOTAL_PANE).
+    -- version where it is basically the equivalent of
+    -- (TAB:PANE/TOTAL_PANE[PANE_STATUS_INDICATORS]).
     --
-    -- Several things to note:
-    -- - The plus sign (+) is an indicator if the active pane is zoomed.
+    -- The pane status indicators should be just a single character, here's an
+    -- exhaustive list of the conditions:
+    -- * If the active pane is zoomed
+    -- * If the leader key is active
     local tab = pane:tab()
+    local location_indicator
     if tab then
       local panes = tab:panes_with_info()
 
@@ -89,13 +103,15 @@ function M.apply_to_config(config)
       end
       ::end_tab::
 
-      local str = active_tab.index + 1 .. ':' .. active_pane.index + 1 .. '/' .. #panes
+      location_indicator = active_tab.index + 1 .. ':' .. active_pane.index + 1 .. '/' .. #panes
       if active_pane.is_zoomed then
-        str = str .. '+'
+        location_indicator = location_indicator .. ZOOMED_CHAR_INDICATOR
       end
-
-      table.insert(left_cells, str)
     end
+    if window:leader_is_active() then
+      location_indicator = location_indicator .. LEADER_CHAR_INDICATOR
+    end
+    table.insert(left_cells, location_indicator)
 
     -- Figure out the cwd and host of the current pane.
     -- This will pick up the hostname for the remote host if your
@@ -106,18 +122,28 @@ function M.apply_to_config(config)
       local user_string = ''
 
       if type(cwd_uri) == 'userdata' then
-        cwd = cwd_uri.file_path:gsub(fds_strings.escape_pattern(wezterm.home_dir), "~")
-        user_string = utils.cond(cwd_uri.username ~= "", cwd.username, utils.get_user()) .. '@' .. cwd_uri.host or wezterm.hostname()
+        cwd = cwd_uri.file_path
+        user_string = utils.cond(cwd_uri.username ~= "", cwd.username, utils.get_user()) .. '@' .. (cwd_uri.host or wezterm.hostname())
       else
         cwd_uri = cwd_uri:sub(8)
         local slash = cwd_uri:find '/'
         if slash then
-          user_string = cwd_uri:sub(1, slash - 1):gsub(fds_strings.escape_pattern(wezterm.home_dir))
+          user_string = cwd_uri:sub(1, slash - 1)
           cwd = cwd_uri:sub(slash):gsub('%%(%x%x)', function(hex)
             return string.char(tonumber(hex, 16))
           end)
         end
       end
+
+      for _, dirtuple in ipairs(prefixes) do
+        local dir = dirtuple[1]
+        local prefix = dirtuple[2]
+        if fds_strings.starts_with(cwd, dir) then
+          cwd = cwd:gsub(fds_strings.escape_pattern(dir), prefix)
+          goto end_cwd
+        end
+      end
+      ::end_cwd::
 
       if user_string == '' then
         user_string = wezterm.hostname()
@@ -130,11 +156,6 @@ function M.apply_to_config(config)
     -- The date component.
     local date = wezterm.strftime '%c'
     table.insert(cells, date)
-
-    -- A leader key indicator.
-    if window:leader_is_active() then
-      table.insert(cells, "LEADER")
-    end
 
     -- Optional battery component.
     for _, b in ipairs(wezterm.battery_info()) do
