@@ -5,6 +5,8 @@ local M = {}
 local wezterm = require("wezterm")
 local utils = require("foodogsquared.utils.init")
 local fds_strings = require("foodogsquared.utils.strings")
+local fds_xdg = require("foodogsquared.utils.xdg")
+local fds_lists = require("foodogsquared.utils.lists")
 
 local LEADER_CHAR_INDICATOR = "🏳️"
 local ZOOMED_CHAR_INDICATOR = "+"
@@ -153,9 +155,24 @@ function M.apply_to_config(config)
       table.insert(cells, user_string)
     end
 
-    -- The date component.
-    local date = wezterm.strftime '%c'
-    table.insert(cells, date)
+    -- The optional date component. This is only disabled in certain places
+    -- where the time component would be rendered redundant.
+    local current_desktop = os.getenv("XDG_CURRENT_DESKTOP") or ""
+
+    -- Pretty much all of the desktop setups I personally use. The ones with
+    -- `one.foodogsquared` are basically properly configured custom desktop
+    -- sessions configured with a proper session manager and everything.
+    local desktop_denylist = { "GNOME", "one%.foodogsquared%.%w+" }
+    if not fds_lists.any(function(_, desktop)
+      return current_desktop:match(desktop)
+    end, desktop_denylist) then
+      local date = wezterm.strftime '%c'
+      table.insert(cells, date)
+    end
+
+    -- The workspace and domain indicator. We placed it in a separate cell
+    -- since they are rarely important in my use case.
+    table.insert(cells, wezterm.mux.get_active_workspace() .. ":" .. pane:get_domain_name())
 
     -- Optional battery component.
     for _, b in ipairs(wezterm.battery_info()) do
