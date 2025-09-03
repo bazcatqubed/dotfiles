@@ -5,7 +5,6 @@ local M = {}
 local wezterm = require("wezterm")
 local utils = require("foodogsquared.utils.init")
 local fds_strings = require("foodogsquared.utils.strings")
-local fds_xdg = require("foodogsquared.utils.xdg")
 local fds_lists = require("foodogsquared.utils.lists")
 
 local LEADER_CHAR_INDICATOR = "🏳️"

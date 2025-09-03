@@ -30,4 +30,22 @@ function M.escape_pattern(str)
   return str:gsub("([^%w])", "%%%1")
 end
 
+--- Split a string given its input and a separator.
+---
+--- @param s string
+--- @param sep string
+--- @return table
+function M.split_by(s, sep)
+  if sep == nil then
+    sep = "%s"
+  end
+
+  local t = {}
+  for str in string.gmatch(s, "(([^" .. sep .. "]+)") do
+    table.insert(t, str)
+  end
+
+  return t
+end
+
 return M
