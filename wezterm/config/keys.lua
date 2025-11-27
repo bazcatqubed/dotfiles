@@ -106,10 +106,11 @@ function module.apply_to_config(config)
     { key = "RightArrow", mods = keymod, action = act.ActivatePaneDirection("Right") },
     { key = "^", mods = keymod, action = act.ActivateLastTab },
     { key = "b", mods = keymod, action = act.RotatePanes 'CounterClockwise' },
+    { key = "s", mods = keymod, action = act.PaneSelect({ mode = "SwapWithActive" }) },
 
     -- More pane-related niceties.
-    { key = "f", mods = "LEADER", action = act.TogglePaneZoomState },
-    { key = "f", mods = keymod, action = act.TogglePaneZoomState },
+    { key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
+    { key = "z", mods = keymod, action = act.TogglePaneZoomState },
     { key = "n", mods = "LEADER", action = act.SplitPane({ direction = "Right", size = { Percent = 37 } }) },
     { key = "n", mods = keymod, action = act.SplitPane({ direction = "Right", size = { Percent = 37 } }) },
     { key = "n", mods = alt_keymod, action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
@@ -159,7 +160,7 @@ function module.apply_to_config(config)
     -- Selection
     { key = "Space", mods = "LEADER", action = act.QuickSelect },
     { key = "a", mods = keymod, action = act.QuickSelect },
-    { key = "s", mods = keymod, action = act.Search({ CaseSensitiveString = "" }) },
+    { key = "f", mods = keymod, action = act.Search({ CaseSensitiveString = "" }) },
   }
 
   config.key_tables = {
@@ -210,6 +211,7 @@ function module.apply_to_config(config)
       { key = "k", action = act.ActivatePaneDirection("Up") },
       { key = "l", action = act.ActivatePaneDirection("Next") },
       { key = "n", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+      { key = "s", action = act.PaneSelect({ mode = "SwapWithActive" }) },
     },
 
     tab = {
