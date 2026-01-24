@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-$env.config.menus = $env.config.menus | append [
+$env.config.menus ++= [
     {
         name: vars_menu
         only_buffer_difference: true
@@ -25,7 +25,7 @@ $env.config.menus = $env.config.menus | append [
     }
 ]
 
-$env.config.keybindings = $env.config.keybindings | append [
+$env.config.keybindings ++= [
     {
         name: vars_menu
         modifier: control

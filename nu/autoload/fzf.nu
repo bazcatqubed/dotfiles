@@ -58,7 +58,7 @@ def __fzf_cd --env --wrapped [...rest: string] {
     }
 }
 
-$env.config.keybindings = $env.config.keybindings | append [
+$env.config.keybindings ++= [
     {
         name: fzf_select
         modifier: control

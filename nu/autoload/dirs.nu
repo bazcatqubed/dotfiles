@@ -5,7 +5,7 @@
 use std/dirs
 use std/dirs shells-aliases *
 
-$env.config.keybindings = $env.config.keybindings | append [
+$env.config.keybindings ++= [
     {
         name: dirs_quickadd
         modifier: control
