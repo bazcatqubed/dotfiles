@@ -73,54 +73,53 @@ def "dir score" [p: record] {
 }
 
 # Add a path or increment its rank into the Nuzlocke database.
-export def add [path?: string]: [
-  string -> any
+export def add [...paths: string,
+  --score: float = 0.01, # Score to be added to the given directories.
+]: [
+  list<string> -> any
   nothing -> any
 ] {
-  if $in == null and $path == null {
-    error make { msg: "No input was given." }
-  }
+  let paths = $in | default $paths | each { |p| utils dir sanitize $p }
 
-  let path = $in | default $path
-  if not ($path | path exists) {
-    error make {
-      msg: "Given path does not exist."
-      label: {
-        text: ("given path is in " + $path)
-        span: (metadata $path).span
+  $paths | each { |p| {
+    if not ($p | path exists) {
+      error make {
+        msg: "Given path does not exist."
+        label: {
+          text: ("given path is in " + $p)
+          span: (metadata $p).span
+        }
       }
     }
-  }
 
-  if not (($path | path type) == "dir") {
-    error make {
-      msg: "Given path is not a directory."
+    if not (($p | path type) == "dir") {
+      error make {
+        msg: "Given path is not a directory."
+      }
     }
-  }
+  } }
 
   if not (db path | path exists) { setup }
 
-  open (db path) | query db r#'
-    INSERT OR IGNORE INTO main (path) VALUES (:p)
-    ON CONFLICT(path) DO UPDATE SET score=score + 0.01, last_accessed = (datetime('now', 'localtime'))
-    WHERE path = :p
+  open (db path) | query db (r#'
+    INSERT OR IGNORE INTO main (path) VALUES '# + ("(?)" | repeat ($paths | length) | str join ",") + r#'
+    ON CONFLICT(path) DO UPDATE SET score=score + ?, last_accessed = (datetime('now', 'localtime'))
+    WHERE '# + ("path = ?" | repeat ($paths | length) | str join "OR ") + r#'
     RETURNING *;
-  '# --params { p: ($path | utils dir sanitize) }
+  '#) --params ($paths ++ [ $score ] ++ $paths)
 }
 
 # Remove a path from the Nuzlocke database.
-export def remove [q?: string@dirs-context]: [
-  string -> any
+export def remove [...paths: string@dirs-context]: [
+  list<string> -> any
   nothing -> any
 ] {
-  if $in == null and $q == null {
-    error make { msg: "No input was given." }
-  }
-
   if not (db path | path exists) { setup }
 
-  let path = $in | default $q | dir sanitize
-  open (db path) | query db "DELETE FROM main WHERE path = ? RETURNING *" --params [ $path ]
+  let paths: list<string> = $in | default $paths | each { |p| $p | utils dir sanitize }
+  let db_script = "DELETE FROM main WHERE " + ("path = ?" | repeat ($paths | length) | str join "OR ") + " RETURNING *"
+
+  open (db path) | query db $db_script --params $paths
 }
 
 # Given a query, search for the matched directories in the database.
