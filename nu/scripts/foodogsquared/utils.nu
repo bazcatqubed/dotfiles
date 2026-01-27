@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # A set of utilities shared among my modules.
 
 # Append the list with the given value if the given condition has been

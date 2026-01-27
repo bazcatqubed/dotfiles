@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021-2025 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 #+title: tools/wiki
 #+date: 2021-05-05 00:27:26 +08:00
 #+date_modified: 2021-05-21 11:12:10 +08:00

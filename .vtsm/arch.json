@@ -3,4 +3,7 @@
     "bin": "$HOME/.local/bin/",
     "emacs": "$HOME/.config/doom",
     "nvim": "$HOME/.config/nvim/",
+    "nu/autoload": "$HOME/.local/share/nushell",
+    "nautilus": "$XDG_DATA_HOME/nautilus",
+    "nautilus-python": "$XDG_DATA_HOME/nautilus-python"
 }

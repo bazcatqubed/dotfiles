@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2025-2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 -- The local bar configuration. This is based from
 -- https://github.com/wezterm/wezterm/issues/500#issuecomment-792202306 or
 -- https://wezterm.org/config/lua/window/set_right_status.html.

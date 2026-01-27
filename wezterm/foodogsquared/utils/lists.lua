@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2025-2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 local M = {}
 
 ---Given a predicate and a list, return a boolean value if any of the item
@@ -28,6 +32,20 @@ function M.all(pred, list)
   end
 
   return true
+end
+
+---Return a new table with its items reversed.
+---@param t table
+---@return table
+function M.reverse(t)
+  local nt = {}
+  local items = #t
+
+  for index, value in ipairs(t) do
+    nt[items + 1 - index] = value
+  end
+
+  return nt
 end
 
 return M

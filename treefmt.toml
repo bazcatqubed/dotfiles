@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023-2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 [formatter.lua]
 command = "stylua"
 includes = [ "*.lua" ]
@@ -5,3 +9,9 @@ includes = [ "*.lua" ]
 [formatter.nu]
 command = "nufmt"
 includes = [ "*.nu" ]
+
+[formatter.python]
+command = "black"
+includes = [
+    "nautilus-extensions/*.py"
+]

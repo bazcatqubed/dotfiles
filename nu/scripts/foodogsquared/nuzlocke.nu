@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # A native Zoxide-like implementation. Based from the following post:
 # https://github.com/nushell/nushell/discussions/17232
 #

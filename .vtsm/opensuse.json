@@ -2,5 +2,7 @@
     "bin": "$HOME/.local/bin",
     "nvim": "$XDG_CONFIG_HOME/nvim",
     "kitty": "$XDG_CONFIG_HOME/kitty",
-    "wezterm": "$XDG_CONFIG_HOME/wezterm"
+    "wezterm": "$XDG_CONFIG_HOME/wezterm",
+    "nautilus": "$XDG_DATA_HOME/nautilus",
+    "nautilus-python": "$XDG_DATA_HOME/nautilus-python"
 }

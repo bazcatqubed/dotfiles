@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023-2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 MANIFEST := nixos-zilch
 FLAGS :=
 

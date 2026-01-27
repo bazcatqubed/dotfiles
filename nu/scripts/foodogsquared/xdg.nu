@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # A Nushell module that simply deals with XDG base directories.
 
 export def get_data_dir [] {

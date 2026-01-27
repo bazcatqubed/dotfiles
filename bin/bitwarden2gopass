@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# SPDX-FileCopyrightText: 2025-2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # Minimum required Python version: v3.6(?)
 
 # This script imports from Bitwarden CSV exports to gopass.

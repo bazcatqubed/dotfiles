@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 use foodogsquared/nuzlocke.nu
 
 alias z = nuzlocke jump
