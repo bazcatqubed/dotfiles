@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 
+use foodogsquared
+
 $env.config.menus ++= [
     {
         name: vars_menu
@@ -36,3 +38,5 @@ $env.config.keybindings ++= [
         }
     }
 ]
+
+$env.config.history.file_format = "sqlite"
