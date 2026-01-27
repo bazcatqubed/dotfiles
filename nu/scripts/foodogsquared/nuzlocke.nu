@@ -80,8 +80,8 @@ def "dir score" [p: record] {
 export def add [...paths: string,
   --score: float = 0.01, # Score to be added to the given directories.
 ]: [
-  list<string> -> any
-  nothing -> any
+  list<string> -> table
+  nothing -> table
 ] {
   let paths = $in | default $paths | each { |p| utils dir sanitize $p }
 
@@ -115,8 +115,8 @@ export def add [...paths: string,
 
 # Remove a path from the Nuzlocke database.
 export def remove [...paths: string@dirs-context]: [
-  list<string> -> any
-  nothing -> any
+  list<string> -> table
+  nothing -> table
 ] {
   if not (db path | path exists) { setup }
 
@@ -143,7 +143,7 @@ export def search [...q: string,
 }
 
 # List all of the directories stored in the database.
-export def list [] {
+export def main [] {
   if not (db path | path exists) { setup }
 
   let data = open (db path) | query db r#'
@@ -156,7 +156,7 @@ export def list [] {
     | update last_accessed { $in | into datetime }
   }
 }
-export alias ls = list
+export alias list = main
 
 def dirs-context [] {
   {
