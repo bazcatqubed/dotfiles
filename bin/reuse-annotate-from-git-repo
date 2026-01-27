@@ -12,7 +12,9 @@
 def main [
     ...paths,
 
-    --reuse-args: list<string>, # Additional arguments to be passed to the generated `reuse` command.
+    --reuse-args: list<string> = [ "--skip-existing" ], # Additional arguments to be passed to the generated `reuse` command.
+
+    --contributor: string, # Override the contributor.
 
     --license: string, # The license to be assigned to the files.
 
@@ -25,9 +27,9 @@ def main [
     --force-current-date = true, # Force the current date for the end year of the range.
 ] {
     let commands = $paths | par-each { |f|
-        # TODO: Get signed-off contributors
-        let blobMetadata = git log --pretty="%H--%aI--%aN--%aE" -- $f | lines
-            | split column "--" hash date author email
+        # TODO: Get signed-off and co-authored contributors
+        let blobMetadata = git log --pretty="%H\t%aI\t%aN\t%aE" -- $f | lines
+            | split column "\t" hash date author email
             | default --empty [
                 {
                     date: (date now | format date),
@@ -46,9 +48,10 @@ def main [
             "reuse"
             "annotate"
             "--copyright"
-            $"($firstBlob | get author) <($firstBlob | get email)>"
+            ($contributor | default $"($firstBlob | get author) <($firstBlob | get email)>")
             "--year"
             ($date | reverse | str join "-")
+            ...($reuse_args)
         ]
 
         if $license != null {
