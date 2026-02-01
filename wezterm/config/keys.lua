@@ -26,12 +26,12 @@ if wezterm.gui then
   table.insert(copy_mode, {
     key = "v",
     mods = "NONE",
-    action = act.CopyMode { SetSelectionMode = "SemanticZone" },
+    action = act.CopyMode({ SetSelectionMode = "SemanticZone" }),
   })
   table.insert(copy_mode, {
     key = "v",
     mods = "CTRL",
-    action = act.CopyMode { SetSelectionMode = "Line" },
+    action = act.CopyMode({ SetSelectionMode = "Line" }),
   })
 end
 
@@ -105,7 +105,7 @@ function module.apply_to_config(config)
     { key = "UpArrow", mods = keymod, action = act.ActivatePaneDirection("Up") },
     { key = "RightArrow", mods = keymod, action = act.ActivatePaneDirection("Right") },
     { key = "^", mods = keymod, action = act.ActivateLastTab },
-    { key = "b", mods = keymod, action = act.RotatePanes 'CounterClockwise' },
+    { key = "b", mods = keymod, action = act.RotatePanes("CounterClockwise") },
     { key = "s", mods = keymod, action = act.PaneSelect({ mode = "SwapWithActive" }) },
 
     -- More pane-related niceties.
@@ -127,11 +127,11 @@ function module.apply_to_config(config)
         one_shot = true,
       }),
     },
+    { key = "t", mods = keymod, action = act.ShowTabNavigator },
     { mods = alt_keymod, key = "h", action = act.ActivateTabRelative(-1) },
     { mods = alt_keymod, key = "j", action = act.ActivateTab(-1) },
     { mods = alt_keymod, key = "k", action = act.ActivateTab(0) },
     { mods = alt_keymod, key = "l", action = act.ActivateTabRelative(1) },
-    { key = "t", mods = alt_keymod, action = act.ShowTabNavigator },
     { key = "d", mods = alt_keymod, action = act.CloseCurrentTab({ confirm = false }) },
 
     -- Hints and quick selections

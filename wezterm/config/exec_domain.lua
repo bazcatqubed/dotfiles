@@ -2,8 +2,8 @@
 --
 -- SPDX-License-Identifier: MIT
 
-local utils = require('foodogsquared.utils.init')
-local fds_strings = require('foodogsquared.utils.strings')
+local utils = require("foodogsquared.utils.init")
+local fds_strings = require("foodogsquared.utils.strings")
 local wezterm = require("wezterm")
 local M = {}
 
@@ -62,7 +62,9 @@ local function toolbox_list_images(data)
   local containers = {}
   for _, value in ipairs(data) do
     local labels = value.Labels or {}
-    local isToolboxContainer = labels["com.github.containers.toolbox"] or labels["com.github.debarshiray.toolbox"] or "false"
+    local isToolboxContainer = labels["com.github.containers.toolbox"]
+      or labels["com.github.debarshiray.toolbox"]
+      or "false"
     if isToolboxContainer ~= "true" then
       goto continue
     end
@@ -78,28 +80,28 @@ end
 
 local function make_podman_label_func(id)
   return function(name)
-    local _, stdout, _ = wezterm.run_child_process {
-      'podman',
-      'inspect',
-      '--format',
-      '{{ .State.Running }}',
+    local _, stdout, _ = wezterm.run_child_process({
+      "podman",
+      "inspect",
+      "--format",
+      "{{ .State.Running }}",
       id,
-    }
-    local running = stdout == 'true\n'
-    local color = running and 'Green' or 'Red'
-    return wezterm.format {
+    })
+    local running = stdout == "true\n"
+    local color = running and "Green" or "Red"
+    return wezterm.format({
       { Foreground = { AnsiColor = color } },
-      { Text = 'Podman container named ' .. name },
-    }
+      { Text = "Podman container named " .. name },
+    })
   end
 end
 
 local function make_systemd_nspawn_label_func(machine)
-  return function (_)
-    return wezterm.format {
+  return function(_)
+    return wezterm.format({
       { Foreground = { AnsiColor = "Green" } },
       { Text = string.format("%s (%s)", machine.os, machine.version) },
-    }
+    })
   end
 end
 
@@ -107,9 +109,9 @@ local function make_podman_fixup_func(id)
   return function(cmd)
     cmd.args = cmd.args or { "/bin/sh" }
     local wrapped = {
-      'podman',
-      'exec',
-      '-it',
+      "podman",
+      "exec",
+      "-it",
       id,
     }
     for _, arg in ipairs(cmd.args) do
@@ -125,9 +127,9 @@ local function make_podman_custom_image_fixup_func(id)
   return function(cmd)
     cmd.args = cmd.args or { "/bin/sh" }
     local wrapped = {
-      'podman',
-      'run',
-      '-it',
+      "podman",
+      "run",
+      "-it",
       id,
     }
     for _, arg in ipairs(cmd.args) do
@@ -166,7 +168,7 @@ local function make_toolbox_fixup_func(name)
 end
 
 local function make_systemd_nspawn_fixup_func(name)
-  return function (cmd)
+  return function(cmd)
     local wrapped = {
       "machinectl",
       "shell",
@@ -186,25 +188,23 @@ function M.apply_to_config(config)
   config.exec_domains = config.exec_domains or {}
 
   if os.execute("systemd-run --version") then
-    table.insert(config.exec_domains,
-      wezterm.exec_domain('scoped', function(cmd)
+    table.insert(
+      config.exec_domains,
+      wezterm.exec_domain("scoped", function(cmd)
         local env = cmd.set_environment_variables
-        local ident = 'wezterm-pane-'
-          .. env.WEZTERM_PANE
-          .. '-on-'
-          .. utils.basename(env.WEZTERM_UNIX_SOCKET)
+        local ident = "wezterm-pane-" .. env.WEZTERM_PANE .. "-on-" .. utils.basename(env.WEZTERM_UNIX_SOCKET)
 
         local wrapped = {
-          'systemd-run',
-          '--user',
-          '--scope',
-          '--description=Shell started by wezterm',
-          '--same-dir',
-          '--collect',
-          '--unit=' .. ident,
+          "systemd-run",
+          "--user",
+          "--scope",
+          "--description=Shell started by wezterm",
+          "--same-dir",
+          "--collect",
+          "--unit=" .. ident,
         }
 
-        for _, arg in ipairs(cmd.args or { os.getenv 'SHELL' }) do
+        for _, arg in ipairs(cmd.args or { os.getenv("SHELL") }) do
           table.insert(wrapped, arg)
         end
 
@@ -218,13 +218,13 @@ function M.apply_to_config(config)
   end
 
   if os.execute("podman --version") then
-    local success, stdout, _ = wezterm.run_child_process {
+    local success, stdout, _ = wezterm.run_child_process({
       "podman",
       "ps",
       "--all",
       "--format",
       "json",
-    }
+    })
     if not success then
       goto end_podman
     end
@@ -234,22 +234,14 @@ function M.apply_to_config(config)
     for id, name in pairs(podman_list_running_containers(containers)) do
       table.insert(
         config.exec_domains,
-        wezterm.exec_domain(
-          'podman:' .. name,
-          make_podman_fixup_func(id),
-          make_podman_label_func(id)
-        )
+        wezterm.exec_domain("podman:" .. name, make_podman_fixup_func(id), make_podman_label_func(id))
       )
     end
 
     for id, name in pairs(podman_list_custom_images(containers)) do
       table.insert(
         config.exec_domains,
-        wezterm.exec_domain(
-          'fds-image:' .. name,
-          make_podman_custom_image_fixup_func(id),
-          make_podman_label_func(id)
-        )
+        wezterm.exec_domain("fds-image:" .. name, make_podman_custom_image_fixup_func(id), make_podman_label_func(id))
       )
     end
 
@@ -257,11 +249,7 @@ function M.apply_to_config(config)
       for id, name in pairs(distrobox_list_images(containers)) do
         table.insert(
           config.exec_domains,
-          wezterm.exec_domain(
-            'distrobox:' .. name,
-            make_distrobox_fixup_func(name),
-            make_podman_label_func(id)
-          )
+          wezterm.exec_domain("distrobox:" .. name, make_distrobox_fixup_func(name), make_podman_label_func(id))
         )
       end
     end
@@ -270,11 +258,7 @@ function M.apply_to_config(config)
       for id, name in pairs(toolbox_list_images(containers)) do
         table.insert(
           config.exec_domains,
-          wezterm.exec_domain(
-            'toolbox:' .. name,
-            make_toolbox_fixup_func(name),
-            make_podman_label_func(id)
-          )
+          wezterm.exec_domain("toolbox:" .. name, make_toolbox_fixup_func(name), make_podman_label_func(id))
         )
       end
     end
@@ -282,12 +266,12 @@ function M.apply_to_config(config)
   ::end_podman::
 
   if os.execute("machinectl --version") and os.execute("systemd-nspawn --version") then
-    local success, stdout, _ = wezterm.run_child_process {
+    local success, stdout, _ = wezterm.run_child_process({
       "machinectl",
       "list",
       "--output",
       "json",
-    }
+    })
 
     if not success then
       goto end_systemd_nspawn
@@ -300,7 +284,7 @@ function M.apply_to_config(config)
       table.insert(
         config.exec_domains,
         wezterm.exec_domain(
-          'systemd-nspawn:' .. name,
+          "systemd-nspawn:" .. name,
           make_systemd_nspawn_fixup_func(name),
           make_systemd_nspawn_label_func(machine)
         )

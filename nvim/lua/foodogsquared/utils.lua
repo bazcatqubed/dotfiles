@@ -4,7 +4,11 @@
 
 local M = {}
 
-function M:to_bool(v)
+--- Returns the Lua object as a truthy value.
+---
+--- @param v? any
+--- @return boolean
+function M.to_bool(v)
   return not not v
 end
 

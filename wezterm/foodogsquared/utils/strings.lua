@@ -11,7 +11,7 @@ local M = {}
 --- @param start string
 --- @return boolean
 function M.starts_with(str, start)
-   return str:sub(1, #start) == start
+  return str:sub(1, #start) == start
 end
 
 --- Indicates whether `str` ends with `ending`.
@@ -19,7 +19,7 @@ end
 --- @param ending string
 --- @return boolean
 function M.ends_with(str, ending)
-   return ending == "" or str:sub(-#ending) == ending
+  return ending == "" or str:sub(-#ending) == ending
 end
 
 ---Returns an escaped version of the string normally used for string functions

@@ -15,19 +15,15 @@ require("config/bar").apply_to_config(config)
 
 local wezterm = require("wezterm")
 
-wezterm.plugin
-  .require("https://github.com/mikkasendke/sessionizer.wezterm")
-  .apply_to_config(config)
+wezterm.plugin.require("https://github.com/mikkasendke/sessionizer.wezterm").apply_to_config(config)
 
-wezterm.plugin
-  .require("https://github.com/mrjones2014/smart-splits.nvim")
-  .apply_to_config(config, {
-    direction_keys = { 'h', 'j', 'k', 'l' },
-    modifiers = {
-      move = 'CTRL',
-      resize = 'META',
-    },
-    log_level = 'info',
-  })
+wezterm.plugin.require("https://github.com/mrjones2014/smart-splits.nvim").apply_to_config(config, {
+  direction_keys = { "h", "j", "k", "l" },
+  modifiers = {
+    move = "CTRL",
+    resize = "META",
+  },
+  log_level = "info",
+})
 
 return config

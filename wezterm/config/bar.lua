@@ -18,8 +18,8 @@ local SOLID_RIGHT_ARROW = utf8.char(0xe0b0)
 
 -- TODO: Update to consider XDG user dirs from xdg-dirs.dirs file.
 local prefixes = {
-  { wezterm.home_dir .. '/Projects',  "$PR" },
-  { wezterm.home_dir .. '/Documents', "$D" },
+  { wezterm.home_dir .. "/Projects", "$PR" },
+  { wezterm.home_dir .. "/Documents", "$D" },
   { wezterm.home_dir, "~" },
 }
 
@@ -32,7 +32,7 @@ function convert_to_elements(is_left, separator, colors, text_fg, cells)
     local separator_color = utils.cond(is_left, colors[cell_no], colors[cell_no + 1])
     table.insert(elements, { Foreground = { Color = text_fg } })
     table.insert(elements, { Background = { Color = colors[cell_no] } })
-    table.insert(elements, { Text = ' ' .. text .. ' ' })
+    table.insert(elements, { Text = " " .. text .. " " })
     if not is_last then
       if is_left then
         table.insert(elements, { Background = { Color = colors[cell_no + 1] } })
@@ -61,11 +61,11 @@ function M.apply_to_config(config)
     local pane = tab.active_pane
     local title = utils.basename(pane.foreground_process_name)
     return {
-      {Text=" " .. title .. " "},
+      { Text = " " .. title .. " " },
     }
   end)
 
-  wezterm.on('update-status', function(window, pane)
+  wezterm.on("update-status", function(window, pane)
     -- Each element holds the text for a cell in a "powerline" style << fade
     local cells = {}
     local left_cells = {}
@@ -108,7 +108,7 @@ function M.apply_to_config(config)
       end
       ::end_tab::
 
-      location_indicator = active_tab.index + 1 .. ':' .. active_pane.index + 1 .. '/' .. #panes
+      location_indicator = active_tab.index + 1 .. ":" .. active_pane.index + 1 .. "/" .. #panes
       if active_pane.is_zoomed then
         location_indicator = location_indicator .. ZOOMED_CHAR_INDICATOR
       end
@@ -123,18 +123,20 @@ function M.apply_to_config(config)
     -- shell is using OSC 7 on the remote host.
     local cwd_uri = pane:get_current_working_dir()
     if cwd_uri then
-      local cwd = ''
-      local user_string = ''
+      local cwd = ""
+      local user_string = ""
 
-      if type(cwd_uri) == 'userdata' then
+      if type(cwd_uri) == "userdata" then
         cwd = cwd_uri.file_path
-        user_string = utils.cond(cwd_uri.username ~= "", cwd.username, utils.get_user()) .. '@' .. (cwd_uri.host or wezterm.hostname())
+        user_string = utils.cond(cwd_uri.username ~= "", cwd.username, utils.get_user())
+          .. "@"
+          .. (cwd_uri.host or wezterm.hostname())
       else
         cwd_uri = cwd_uri:sub(8)
-        local slash = cwd_uri:find '/'
+        local slash = cwd_uri:find("/")
         if slash then
           user_string = cwd_uri:sub(1, slash - 1)
-          cwd = cwd_uri:sub(slash):gsub('%%(%x%x)', function(hex)
+          cwd = cwd_uri:sub(slash):gsub("%%(%x%x)", function(hex)
             return string.char(tonumber(hex, 16))
           end)
         end
@@ -150,7 +152,7 @@ function M.apply_to_config(config)
       end
       ::end_cwd::
 
-      if user_string == '' then
+      if user_string == "" then
         user_string = wezterm.hostname()
       end
 
@@ -166,10 +168,12 @@ function M.apply_to_config(config)
     -- `one.foodogsquared` are basically properly configured custom desktop
     -- sessions configured with a proper session manager and everything.
     local desktop_denylist = { "GNOME", "one%.foodogsquared%.%w+" }
-    if not fds_lists.any(function(_, desktop)
-      return current_desktop:match(desktop)
-    end, desktop_denylist) then
-      local date = wezterm.strftime '%c'
+    if
+      not fds_lists.any(function(_, desktop)
+        return current_desktop:match(desktop)
+      end, desktop_denylist)
+    then
+      local date = wezterm.strftime("%c")
       table.insert(cells, date)
     end
 
@@ -179,7 +183,7 @@ function M.apply_to_config(config)
 
     -- Optional battery component.
     for _, b in ipairs(wezterm.battery_info()) do
-      table.insert(cells, string.format('%.0f%%', b.state_of_charge * 100))
+      table.insert(cells, string.format("%.0f%%", b.state_of_charge * 100))
     end
 
     -- Setting up the components themselves.
@@ -192,7 +196,7 @@ function M.apply_to_config(config)
       colors = {
         accent_color:darken(0.33),
         accent_color:lighten(0.1),
-      }
+      },
     }, 4)
 
     window:set_right_status(wezterm.format(convert_to_elements(false, SOLID_LEFT_ARROW, accents, text_fg, cells)))

@@ -68,16 +68,11 @@ return {
         get_builtin("live_grep"),
         { noremap = true, desc = "Grep for string in project" }
       )
-      vim.keymap.set(
-        "n",
-        "<leader>fG",
-        function ()
-          builtins.live_grep({
-            cwd = require("telescope.utils").buffer_dir()
-          })
-        end,
-        { noremap = true, desc = "Grep for string in current directory" }
-      )
+      vim.keymap.set("n", "<leader>fG", function()
+        builtins.live_grep({
+          cwd = require("telescope.utils").buffer_dir(),
+        })
+      end, { noremap = true, desc = "Grep for string in current directory" })
 
       vim.keymap.set(
         "n",
@@ -85,19 +80,14 @@ return {
         get_builtin("buffers", { ignore_current_buffer = true }),
         { noremap = true, desc = "Search currently opened buffers" }
       )
-      vim.keymap.set(
-        "n",
-        "<leader>fB",
-        function ()
-          builtins.buffers({
-            cwd = require("telescope.utils").buffer_dir(),
-            ignore_current_buffer = true,
-            show_all_buffers = false,
-            only_cwd = true,
-          })
-        end,
-        { noremap = true, desc = "Search currently opened buffers in current directory" }
-      )
+      vim.keymap.set("n", "<leader>fB", function()
+        builtins.buffers({
+          cwd = require("telescope.utils").buffer_dir(),
+          ignore_current_buffer = true,
+          show_all_buffers = false,
+          only_cwd = true,
+        })
+      end, { noremap = true, desc = "Search currently opened buffers in current directory" })
 
       vim.keymap.set("n", "<leader>fh", get_builtin("help_tags"), { noremap = true, desc = "Search help pages" })
       vim.keymap.set(

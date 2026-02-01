@@ -9,7 +9,7 @@ local M = {}
 --- @param s string
 --- @return string
 function M.basename(s)
-  return string.gsub(s, '(.*[/\\])(.*)', '%2')
+  return string.gsub(s, "(.*[/\\])(.*)", "%2")
 end
 
 --- Return a boolean indicating if the given executable is found in $PATH.
@@ -40,7 +40,11 @@ end
 ---@param F any
 ---@return any
 function M.cond(cond, T, F)
-  if cond then return T else return F end
+  if cond then
+    return T
+  else
+    return F
+  end
 end
 
 return M
