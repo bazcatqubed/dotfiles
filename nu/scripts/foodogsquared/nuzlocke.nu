@@ -54,7 +54,7 @@ export def setup [] {
 
     # Well, I'm just sick of making this to open it again and again since
     # Nushell doesn't allow multiple statements in one query.
-    sqlite3 $db ($db_initial_script + $initial_data_script + "COMMIT;")
+    ^sqlite3 $db ($db_initial_script + $initial_data_script + "COMMIT;")
   }
 }
 
@@ -78,7 +78,7 @@ def "dir score" [p: record] {
 
 # Add a path or increment its rank into the Nuzlocke database.
 export def add [...paths: string,
-  --score: float = 0.01, # Score to be added to the given directories.
+  --score: float = 0.1, # Score to be added to the given directories.
 ]: [
   list<string> -> table
   nothing -> table
@@ -96,7 +96,7 @@ export def add [...paths: string,
       }
     }
 
-    if not (($p | path type) == "dir") {
+    if ($p | path type) != "dir" {
       error make {
         msg: "Given path is not a directory."
       }

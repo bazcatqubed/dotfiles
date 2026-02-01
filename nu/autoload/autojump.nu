@@ -28,7 +28,7 @@ $env.config.menus ++= [
       description_text: yellow
     }
     source: { |buffer, position|
-      nuzlocke search $buffer --limit 10 | each { |o| { value: $o } }
+      nuzlocke search ($buffer | split words | last)  --limit 20 | each { |o| { value: $o } }
     }
   }
 ]
