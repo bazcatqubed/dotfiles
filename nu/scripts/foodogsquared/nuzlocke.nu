@@ -42,10 +42,10 @@ export def setup [] {
         'path' TEXT UNIQUE NOT NULL,
         'score' REAL NOT NULL DEFAULT 0.0,
         'last_accessed' DATETIME DEFAULT (datetime('now', 'localtime'))
-      );
+      ) STRICT;
 
       -- Make a covering index because why not.
-      CREATE INDEX index_path_length ON main(length(path), path, last_accessed);
+      CREATE INDEX idx_path ON main(length(path), path, last_accessed);
     '#
 
     let initial_data_script = db default-data
@@ -127,19 +127,48 @@ export def remove [...paths: string@dirs-context]: [
 }
 
 # Given a query, search for the matched directories in the database.
-export def search [...q: string,
+export def query [...q: string,
   --limit: int = 10, # How many entries to be shown.
 ] {
   if not (db path | path exists) { setup }
 
+  let query = $q | where {|it| ($it | path expand) != $it }
+  let paths = $q | where {|it| ($it | path expand) == $it }
+
+  if $q == [] {
+    return (main)
+  }
+
   try {
-    open (db path) | query db r#'
-      SELECT path FROM main WHERE path LIKE ? AND path != ? ORDER BY
+    mut params = [ $env.PWD ]
+
+    if ($query | length) > 0 {
+      $params ++= [ $"%($query | str join '%')%" ]
+    }
+
+    if ($paths | length) > 0 {
+      $params ++= $paths
+    }
+
+    $params ++= [ $limit ]
+
+    let db_query = (r#'
+      SELECT * FROM main WHERE path != ? AND ('#
+      + (if ($query | length) > 0 { "path LIKE ? " } else { "" })
+      + (if (($query | length) > 0) and (($paths | length) > 0) { "OR " } else { "" })
+      + ("path = ?" | repeat ($paths | length) | str join "OR ")
+      + r#') ORDER BY
         score DESC, last_accessed DESC, LENGTH(path)
         LIMIT ?
-    '# --params  [$"%($q | str join '%')%", $env.PWD, $limit]
-    | get path
+    '#)
+
+    open (db path) | query db $db_query --params $params
   } catch { |_| return null }
+}
+
+# Convenience function around `query` for getting paths.
+export def search --wrapped [...args] {
+  query ...$args | get path | default null
 }
 
 # List all of the directories stored in the database.

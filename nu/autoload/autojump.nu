@@ -17,10 +17,10 @@ $env.config.menus ++= [
   {
     name: jump_menu
     only_buffer_difference: false
-    marker: "| "
+    marker: "↟  "
     type: {
-      layout: columnar
-      page_size: 20
+      layout: list
+      page_size: 10
     }
     style: {
       text: green
@@ -28,7 +28,7 @@ $env.config.menus ++= [
       description_text: yellow
     }
     source: { |buffer, position|
-      nuzlocke search ($buffer | split words | last)  --limit 20 | each { |o| { value: $o } }
+      nuzlocke query $buffer --limit 10 | get path | each { |o| { value: $o } }
     }
   }
 ]
