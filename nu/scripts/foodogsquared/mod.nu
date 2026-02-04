@@ -6,3 +6,5 @@ export use xdg.nu
 export use nuzlocke.nu
 export use utils.nu
 export use git.nu
+export use dotdir.nu
+export use qol.nu

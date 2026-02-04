@@ -32,6 +32,23 @@ export def log --wrapped [...rest: string] {
   | lines | split column "\t" subject hash date author email
 }
 
+# Get shortened history metadata from the list of paths in a Git repository.
+export def get-date-from-files [...rest: string] {
+  log ...$rest
+  | group-by email
+  | update cells { |v|
+    mut r = { }
+
+    $r.date = $v | get date | get (($in | length) - 1) 0 | uniq
+    | each { |d| $d | date from-human | format date "%Y" }
+    | str join '-'
+
+    $r.author = $v.author | get 0
+
+    $r
+  }
+}
+
 # Create the typical user string found in commits.
 export def get-complete-user [] {
   $"(^git config user.name) <(^git config user.email)>"
