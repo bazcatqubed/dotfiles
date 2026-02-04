@@ -12,7 +12,7 @@
 def main [
     ...paths,
 
-    --reuse-args: list<string> = [ "--skip-existing" ], # Additional arguments to be passed to the generated `reuse` command.
+    --reuse-args: list<string> = [ ], # Additional arguments to be passed to the generated `reuse` command.
 
     --contributor: string, # Override the contributor.
 
@@ -24,56 +24,63 @@ def main [
 
     --json, # Generates a JSON object usable for external scripts.
 
-    --force-current-date = true, # Force the current date for the end year of the range.
+    --force-current-date = false, # Force the current date for the end year of the range.
 ] {
-    let commands = $paths | par-each { |f|
-        # TODO: Get signed-off and co-authored contributors
-        let blobMetadata = git log --pretty="%H\t%aI\t%aN\t%aE" -- $f | lines
-            | split column "\t" hash date author email
-            | default --empty [
-                {
-                    date: (date now | format date),
-                    author: (git config user.name),
-                    email: (git config user.email),
-                }
-            ]
+  let commands = $paths | par-each { |f|
+    # TODO: Get signed-off and co-authored contributors
+    let contributors = ^git log --pretty="%H\t%aI\t%aN <%aE>" -- $f | lines
+    | split column "\t" hash date author
+    | default --empty [
+      {
+        date: (date now | format date),
+        author: $"(^git config user.name) <(^git config user.email)>"
+      }
+    ]
+    | group-by author
+    | update cells { |v|
+        $v | get date
+        | append (if $force_current_date { [ (date now) ] } else { [ ] })
+        | get (($in | length) - 1) 0
+        | each { |d| $d | date from-human | format date "%Y" }
+        | uniq
+        | str join '-'
+    }
+    | sort --values
 
-        let firstBlob = $blobMetadata | get 0
-        let date = match $force_current_date {
-            true => ($blobMetadata | get (($blobMetadata | length) - 1) | get date | prepend (date now | format date)),
-            false => ($blobMetadata | get 0 (($blobMetadata | length) - 1) | get date),
-        } | each { |d| $d | date from-human | format date "%Y" } | uniq
+    let commands = $contributors | items { |k, v|
+      mut cmd = [
+        "reuse" "annotate"
+        "--copyright" $k "--year" $v
+        ...$reuse_args
+      ]
 
-        mut command = [
-            "reuse"
-            "annotate"
-            "--copyright"
-            ($contributor | default $"($firstBlob | get author) <($firstBlob | get email)>")
-            "--year"
-            ($date | reverse | str join "-")
-            ...($reuse_args)
-        ]
+      if $license != null {
+        $cmd ++= [ "--license" $license ]
+      }
 
-        if $license != null {
-            $command ++= [ "--license" $license ]
-        }
+      if $style != null {
+        $cmd ++= [ "--style" $style ]
+      }
 
-        if $style != null {
-            $command ++= [ "--style" $style ]
-        }
+      $cmd ++= [ $f ]
 
-        $command ++= [ $f ]
-
-        if $dry_run {
-            print ($command | str join " ")
-        } else if $json {
-            $command
-        } else {
-            run-external ...$command
-        }
+      $cmd
     }
 
-    if $json {
-        $commands | to json
+    if $dry_run {
+      for cmd in $commands {
+        print ($cmd | str join ' ')
+      }
+    } else if $json {
+      $commands
+    } else {
+      for cmd in $commands {
+        run-external ...$cmd
+      }
     }
+  }
+
+  if $json {
+    $commands | to json
+  }
 }
