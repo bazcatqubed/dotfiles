@@ -13,8 +13,10 @@ use std/util [repeat]
 
 
 # Prints the full path of the Nuzlocke database.
-export def "db path" [] {
-  $'($nu.data-dir? | default $'($env.HOME)/.local/share/nushell')/foodogsquared/nuzlocke.db'
+export def "db path" --env [] {
+  $env.config.nuzlocke?.db-path?
+  | default $env.FDS_NUZLOCKE_DB_PATH?
+  | default $'($nu.data-dir? | default $'($env.HOME)/.local/share/nushell')/foodogsquared/nuzlocke.db'
 }
 
 # Prints the default dataset for the Nuzlocke database.
