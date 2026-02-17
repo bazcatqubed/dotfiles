@@ -24,12 +24,12 @@ export def "db path" --env [] {
 # As of this writing, it simply adds the home directory and various XDG base
 # directories.
 def "db default-data" [] {
-  utils optional ($env.XDG_DOCUMENTS_DIR? != null) [ $env.XDG_DOCUMENTS_DIR ]
-  | utils optional ($env.XDG_DOWNLOAD_DIR? != null) [ $env.XDG_DOWNLOAD_DIR ]
-  | utils optional ($env.XDG_PICTURES_DIR? != null) [ $env.XDG_PICTURES_DIR ]
-  | utils optional ($env.XDG_VIDEOS_DIR? != null) [ $env.XDG_VIDEOS_DIR ]
-  | utils optional ($env.XDG_MUSIC_DIR? != null) [ $env.XDG_MUSIC_DIR ]
-  | utils optional ($env.XDG_DESKTOP_DIR? != null) [ $env.XDG_DESKTOP_DIR ]
+  utils optional list ($env.XDG_DOCUMENTS_DIR? != null) [ $env.XDG_DOCUMENTS_DIR ]
+  | utils optional list ($env.XDG_DOWNLOAD_DIR? != null) [ $env.XDG_DOWNLOAD_DIR ]
+  | utils optional list ($env.XDG_PICTURES_DIR? != null) [ $env.XDG_PICTURES_DIR ]
+  | utils optional list ($env.XDG_VIDEOS_DIR? != null) [ $env.XDG_VIDEOS_DIR ]
+  | utils optional list ($env.XDG_MUSIC_DIR? != null) [ $env.XDG_MUSIC_DIR ]
+  | utils optional list ($env.XDG_DESKTOP_DIR? != null) [ $env.XDG_DESKTOP_DIR ]
 }
 
 # Create the initial setup for the application.
@@ -183,7 +183,6 @@ export def main [] {
 
   $data | each { |dir|
     $dir
-    | update score { (dir score $dir) }
     | update last_accessed { $in | into datetime }
   }
 }
