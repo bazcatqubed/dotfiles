@@ -6,7 +6,7 @@
 
 # Append the list with the given value if the given condition has been
 # fulfilled.
-export def optional [cond: bool, val: list, init?: list = [ ] ]: [
+export def "optional list" [cond: bool, val: list, init?: list = [ ] ]: [
   list -> list
   nothing -> list
 ] {
@@ -15,6 +15,20 @@ export def optional [cond: bool, val: list, init?: list = [ ] ]: [
     $d | append $val
   } else {
     $d
+  }
+}
+
+# Append the string with the given value if the given condition has been
+# fulfilled.
+export def "optional string" [cond: bool, val: string, init?: string = "" ]: [
+  string -> string
+  nothing -> string
+] {
+  let v = $in | default $init
+  if $cond {
+    $v + $val
+  } else {
+    $v
   }
 }
 
