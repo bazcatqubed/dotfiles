@@ -13,28 +13,44 @@ use std/util [repeat]
 
 
 # Prints the full path of the Nuzlocke database.
-export def "db path" --env [] {
+export def "config db-path" --env [] {
   $env.config.nuzlocke?.db-path?
   | default $env.FDS_NUZLOCKE_DB_PATH?
   | default $'($nu.data-dir? | default $'($env.HOME)/.local/share/nushell')/foodogsquared/nuzlocke.db'
+}
+
+export def "config exclude-paths" --env []: [
+  nothing -> list<string>
+] {
+  $env.config.nuzlocke?.exclude-paths?
+  | default $env.FDS_NUZLOCKE_EXCLUDE_PATHS?
+  | default (config default-exclude-paths)
 }
 
 # Prints the default dataset for the Nuzlocke database.
 #
 # As of this writing, it simply adds the home directory and various XDG base
 # directories.
-def "db default-data" [] {
+def "config default-data" [] {
   utils optional list ($env.XDG_DOCUMENTS_DIR? != null) [ $env.XDG_DOCUMENTS_DIR ]
   | utils optional list ($env.XDG_DOWNLOAD_DIR? != null) [ $env.XDG_DOWNLOAD_DIR ]
   | utils optional list ($env.XDG_PICTURES_DIR? != null) [ $env.XDG_PICTURES_DIR ]
   | utils optional list ($env.XDG_VIDEOS_DIR? != null) [ $env.XDG_VIDEOS_DIR ]
   | utils optional list ($env.XDG_MUSIC_DIR? != null) [ $env.XDG_MUSIC_DIR ]
   | utils optional list ($env.XDG_DESKTOP_DIR? != null) [ $env.XDG_DESKTOP_DIR ]
+  | utils optional list ($env.XDG_PUBLICSHARE_DIR? != null) [ $env.XDG_PUBLICSHARE_DIR ]
+}
+
+def "config default-exclude-paths" [] {
+  [ $nu.home-dir ]
+  | utils optional list ($env.XDG_STATE_HOME? != null) [ $env.XDG_STATE_HOME ]
+  | utils optional list ($env.XDG_CACHE_HOME? != null) [ $env.XDG_CACHE_HOME ]
+  | utils optional list ($env.XDG_RUNTIME_DIR? != null) [ $env.XDG_RUNTIME_DIR ]
 }
 
 # Create the initial setup for the application.
 export def setup [] {
-  let db = db path
+  let db = config db-path
   if not ($db | path exists) {
     mkdir ($db | path dirname)
 
@@ -50,7 +66,7 @@ export def setup [] {
       CREATE INDEX idx_path ON main(length(path), path, last_accessed);
     '#
 
-    let initial_data_script = db default-data
+    let initial_data_script = config default-data
       | each { |$o| $"INSERT INTO \"main\" \(path\) VALUES\('($o)'\);" }
       | str join "\n"
 
@@ -85,7 +101,8 @@ export def add [...paths: string,
   list<string> -> table
   nothing -> table
 ] {
-  let paths = $in | default $paths | each { |p| utils dir sanitize $p }
+  let exclude_paths = config exclude-paths
+  let paths: list<string> = $in | default $paths | each { |p| utils dir sanitize $p } | where { |p| $p not-in $exclude_paths }
 
   $paths | each { |p| {
     if not ($p | path exists) {
@@ -105,9 +122,13 @@ export def add [...paths: string,
     }
   } }
 
-  if not (db path | path exists) { setup }
+  if ($paths | is-empty) {
+    return {}
+  }
 
-  open (db path) | query db (r#'
+  if not (config db-path | path exists) { setup }
+
+  open (config db-path) | query db (r#'
     INSERT OR IGNORE INTO main (path) VALUES '# + ("(?)" | repeat ($paths | length) | str join ",") + r#'
     ON CONFLICT(path) DO UPDATE SET score=score + ?, last_accessed = (datetime('now', 'localtime'))
     WHERE '# + ("path = ?" | repeat ($paths | length) | str join "OR ") + r#'
@@ -120,19 +141,19 @@ export def remove [...paths: string@dirs-context]: [
   list<string> -> table
   nothing -> table
 ] {
-  if not (db path | path exists) { setup }
+  if not (config db-path | path exists) { setup }
 
   let paths: list<string> = $in | default $paths | each { |p| $p | utils dir sanitize }
   let db_script = "DELETE FROM main WHERE " + ("path = ?" | repeat ($paths | length) | str join "OR ") + " RETURNING *"
 
-  open (db path) | query db $db_script --params $paths
+  open (config db-path) | query db $db_script --params $paths
 }
 
 # Given a query, search for the matched directories in the database.
 export def query [...q: string,
   --limit: int = 10, # How many entries to be shown.
 ] {
-  if not (db path | path exists) { setup }
+  if not (config db-path | path exists) { setup }
 
   let query = $q | where {|it| ($it | path expand) != $it }
   let paths = $q | where {|it| ($it | path expand) == $it }
@@ -164,7 +185,7 @@ export def query [...q: string,
         LIMIT ?
     '#)
 
-    open (db path) | query db $db_query --params $params
+    open (config db-path) | query db $db_query --params $params
   } catch { |_| return null }
 }
 
@@ -175,9 +196,9 @@ export def search --wrapped [...args] {
 
 # List all of the directories stored in the database.
 export def main [] {
-  if not (db path | path exists) { setup }
+  if not (config db-path | path exists) { setup }
 
-  let data = open (db path) | query db r#'
+  let data = open (config db-path) | query db r#'
     SELECT * FROM main ORDER BY score DESC, last_accessed DESC;
   '#
 
@@ -216,7 +237,7 @@ export def jump --env [...q: string@dirs-context] {
 
 # Reset the database.
 export def reset [] {
-  rm (db path)
+  rm (config db-path)
   db setup
 }
 
@@ -230,6 +251,6 @@ export def gc [] {
 
   let db_script = "DELETE FROM main WHERE path = " + ("?" | repeat ($nonexisting_paths | length) | str join ", ") + " RETURNING *"
 
-  open (db path)
+  open (config db-path)
   | query db $db_script --params ($nonexisting_paths | get path)
 }
