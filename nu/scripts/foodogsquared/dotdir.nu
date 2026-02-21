@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
 # Link files from the dotfiles directory to the given path. This is mostly used
 # on projects that uses configuration ad-hoc such as Git hooks.
 export def link-from [dotdir_path: string, path: string] {
