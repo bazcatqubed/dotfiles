@@ -20,7 +20,7 @@ export def "config db-path" --env [] {
 }
 
 export def "config exclude-paths" --env []: [
-  nothing -> list<string>
+  nothing -> table
 ] {
   $env.config.nuzlocke?.exclude-paths?
   | default $env.FDS_NUZLOCKE_EXCLUDE_PATHS?
@@ -41,11 +41,11 @@ def "config default-data" [] {
   | utils optional list ($env.XDG_PUBLICSHARE_DIR? != null) [ $env.XDG_PUBLICSHARE_DIR ]
 }
 
-def "config default-exclude-paths" [] {
-  [ $nu.home-dir ]
-  | utils optional list ($env.XDG_STATE_HOME? != null) [ $env.XDG_STATE_HOME ]
-  | utils optional list ($env.XDG_CACHE_HOME? != null) [ $env.XDG_CACHE_HOME ]
-  | utils optional list ($env.XDG_RUNTIME_DIR? != null) [ $env.XDG_RUNTIME_DIR ]
+def "config default-exclude-paths" --env [] {
+  [ { dir: $nu.home-dir, exact: true } ]
+  | utils optional list ($env.XDG_STATE_HOME? != null) [ { dir: $env.XDG_STATE_HOME } ]
+  | utils optional list ($env.XDG_CACHE_HOME? != null) [ { dir : $env.XDG_CACHE_HOME } ]
+  | utils optional list ($env.XDG_RUNTIME_DIR? != null) [ { dir: $env.XDG_RUNTIME_DIR } ]
 }
 
 # Create the initial setup for the application.
@@ -94,6 +94,22 @@ def "dir score" [p: record] {
   }
 }
 
+# See if the given path is excluded from the blocklist.
+def "dir is-excluded" [p: string]: [
+  table -> bool
+  nothing -> bool
+] {
+  let exclude_paths = $in | default config exclude-paths
+
+  $exclude_paths | any { |e|
+    if ($e.exact? | default false) {
+      $e.dir == $p
+    } else {
+      $p | str starts-with $e.dir
+    }
+  }
+}
+
 # Add a path or increment its rank into the Nuzlocke database.
 export def add [...paths: string,
   --score: float = 0.1, # Score to be added to the given directories.
@@ -102,7 +118,9 @@ export def add [...paths: string,
   nothing -> table
 ] {
   let exclude_paths = config exclude-paths
-  let paths: list<string> = $in | default $paths | each { |p| utils dir sanitize $p } | where { |p| $p not-in $exclude_paths }
+  let paths: list<string> = $in | default $paths | each { |p| utils dir sanitize $p } | where { |p|
+    not ($exclude_paths | dir is-excluded $p)
+  }
 
   $paths | each { |p| {
     if not ($p | path exists) {
