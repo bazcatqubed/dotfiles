@@ -1,11 +1,26 @@
+# A independent native [autojump-like](https://github.com/wting/autojump)
+# implementation in Nushell. As such, it has its own database schema as well as
+# native integration all within Nushell.
+#
+# Nuzlocke expects its configuration value to be set at `$env.config.nuzlocke`
+# namespace.
+#
+# As of 2026-02-23, it expects the following config keys:
+#
+# - `$env.config.nuzlocke.db-path` is a path where the database will be stored
+# for various operations (e.g., querying for paths).
+#
+# - `$env.config.nuzlocke.exclude-paths` is a table of paths where Nuzlocke
+# deny any paths listed here. For now, it is a table with the following schema:
+# ** `dir` is the path to be excluded and it is **required**.
+# ** `exact` tells whether the given path is only considered or any of the subpath.
+#
+# Based from the following post:
+# https://github.com/nushell/nushell/discussions/17232
+
 # SPDX-FileCopyrightText: 2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
 #
 # SPDX-License-Identifier: MIT
-
-# A native Zoxide-like implementation. Based from the following post:
-# https://github.com/nushell/nushell/discussions/17232
-#
-# Basically an autojump reimplementation in Nushell.
 
 use std/dirs
 use ./utils.nu
@@ -213,7 +228,7 @@ export def search --wrapped [...args] {
 }
 
 # List all of the directories stored in the database.
-export def main [] {
+export def list [] {
   if not (config db-path | path exists) { setup }
 
   let data = open (config db-path) | query db r#'
@@ -225,7 +240,6 @@ export def main [] {
     | update last_accessed { $in | into datetime }
   }
 }
-export alias list = main
 
 def dirs-context [] {
   {
