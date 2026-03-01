@@ -2,7 +2,11 @@
 --
 -- SPDX-License-Identifier: MIT
 
-local config = require("wezterm").config_builder()
+local config = require("wezterm").config_builder() ---@type Config
+
+local xdg_utils = require("foodogsquared/xdg")
+xdg_env = xdg_utils.parse_xdg_user_dirs()
+
 config:set_strict_mode(true)
 
 require("config/events").apply_to_config(config)
@@ -23,7 +27,7 @@ wezterm.plugin.require("https://github.com/mrjones2014/smart-splits.nvim").apply
     move = "CTRL",
     resize = "META",
   },
-  log_level = "info",
+  log_level = "off",
 })
 
 return config

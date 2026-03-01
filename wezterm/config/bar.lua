@@ -18,8 +18,10 @@ local SOLID_RIGHT_ARROW = utf8.char(0xe0b0)
 
 -- TODO: Update to consider XDG user dirs from xdg-dirs.dirs file.
 local prefixes = {
-  { wezterm.home_dir .. "/Projects", "$PR" },
-  { wezterm.home_dir .. "/Documents", "$D" },
+  { xdg_env["PROJECTS"], "$PR" },
+  { xdg_env["DOCUMENTS"], "$DOC" },
+  { xdg_env["PICTURES"], "$PICS" },
+  { xdg_env["DOWNLOAD"], "$DOWN" },
   { wezterm.home_dir, "~" },
 }
 
