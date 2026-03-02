@@ -29,7 +29,7 @@ use std/util [repeat]
 
 # Prints the full path of the Nuzlocke database.
 export def "config db-path" --env [] {
-  $env.config.nuzlocke?.db-path?
+  $env.config.nuzlocke?.db_path?
   | default $env.FDS_NUZLOCKE_DB_PATH?
   | default $'($nu.data-dir? | default $'($env.HOME)/.local/share/nushell')/foodogsquared/nuzlocke.db'
 }
@@ -37,12 +37,12 @@ export def "config db-path" --env [] {
 export def "config exclude-paths" --env []: [
   nothing -> table
 ] {
-  $env.config.nuzlocke?.exclude-paths?
+  $env.config.nuzlocke?.exclude_paths?
   | default $env.FDS_NUZLOCKE_EXCLUDE_PATHS?
   | default (config default-exclude-paths)
 }
 
-# Prints the default dataset for the Nuzlocke database.
+# Returns the default dataset for the Nuzlocke database.
 #
 # As of this writing, it simply adds the home directory and various XDG base
 # directories.
@@ -56,7 +56,8 @@ def "config default-data" [] {
   | utils optional list ($env.XDG_PUBLICSHARE_DIR? != null) [ $env.XDG_PUBLICSHARE_DIR ]
 }
 
-def "config default-exclude-paths" --env [] {
+# The reasonable default list of exclude paths.
+export def "config default-exclude-paths" --env [] {
   [ { dir: $nu.home-dir, exact: true } ]
   | utils optional list ($env.XDG_STATE_HOME? != null) [ { dir: $env.XDG_STATE_HOME } ]
   | utils optional list ($env.XDG_CACHE_HOME? != null) [ { dir : $env.XDG_CACHE_HOME } ]
@@ -163,7 +164,7 @@ export def add [...paths: string,
 
   open (config db-path) | query db (r#'
     INSERT OR IGNORE INTO main (path) VALUES '# + ("(?)" | repeat ($paths | length) | str join ",") + r#'
-    ON CONFLICT(path) DO UPDATE SET score=score + ?, last_accessed = (datetime('now', 'localtime'))
+    ON CONFLICT(path) DO UPDATE SET score=ROUND(score + ?, 2), last_accessed = (datetime('now', 'localtime'))
     WHERE '# + ("path = ?" | repeat ($paths | length) | str join "OR ") + r#'
     RETURNING *;
   '#) --params ($paths ++ [ $score ] ++ $paths)
@@ -187,6 +188,8 @@ export def query [...q: string,
   --limit: int = 10, # How many entries to be shown.
 ] {
   if not (config db-path | path exists) { setup }
+
+  let q = $q
 
   let query = $q | where {|it| ($it | path expand) != $it }
   let paths = $q | where {|it| ($it | path expand) == $it }
@@ -218,7 +221,7 @@ export def query [...q: string,
         LIMIT ?
     '#)
 
-    open (config db-path) | query db $db_query --params $params
+    open (config db-path) | query db $db_query --params $params | normalize
   } catch { |_| return null }
 }
 
@@ -228,17 +231,18 @@ export def search --wrapped [...args] {
 }
 
 # List all of the directories stored in the database.
-export def list [] {
+export def list [
+  --link # Skip making OSC7 hyperlinks.
+] {
   if not (config db-path | path exists) { setup }
 
   let data = open (config db-path) | query db r#'
     SELECT * FROM main ORDER BY score DESC, last_accessed DESC;
   '#
 
-  $data | each { |dir|
-    $dir
-    | update last_accessed { $in | into datetime }
-  }
+  $data | normalize | if $link {
+    $in | each { |i| $i | update path { $in | ansi link } }
+  } else { $in }
 }
 
 def dirs-context [] {
@@ -285,4 +289,14 @@ export def gc [] {
 
   open (config db-path)
   | query db $db_script --params ($nonexisting_paths | get path)
+}
+
+# Given a result of a database query, normalize the data for Nushell version.
+def normalize []: [
+  table -> table
+] {
+  $in | each { |dir|
+    $dir
+    | update last_accessed { $in | into datetime }
+  }
 }

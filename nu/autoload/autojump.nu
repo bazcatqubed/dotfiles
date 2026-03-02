@@ -5,13 +5,21 @@
 use foodogsquared/nuzlocke.nu
 
 alias z = nuzlocke jump
-alias zl = nuzlocke list
+alias zl = nuzlocke list --link
 
 $env.config.hooks.env_change = $env.config.hooks.env_change | merge deep --strategy=append {
   PWD: [
     { |before, after| nuzlocke add $after }
   ]
 }
+
+$env.FDS_NUZLOCKE_EXCLUDE_PATHS = [
+  { dir: "/nix" }
+  { dir: "/gnu" }
+  { dir: "/dev" }
+  { dir: "/proc" }
+  ...(nuzlocke config default-exclude-paths)
+]
 
 $env.config.menus ++= [
   {
