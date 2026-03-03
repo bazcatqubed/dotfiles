@@ -2,7 +2,7 @@
 --
 -- SPDX-License-Identifier: MIT
 
-local wezterm = require("wezterm")
+local wezterm = require("wezterm") ---@type Wezterm
 local base = require("config/base")
 local act = wezterm.action
 

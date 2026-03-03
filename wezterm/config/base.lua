@@ -5,6 +5,8 @@
 -- A local jumpstart for creating my base configuration.
 local module = {}
 
+local wezterm = require("wezterm")
+
 function module.apply_to_config(config)
   -- Quick select-related options. Quite similar to Kitty hints which is
   -- nice.
@@ -38,7 +40,33 @@ function module.apply_to_config(config)
     fade_out_duration_ms = 50,
   }
 
+  config.max_fps = 120
+
   config.unzoom_on_switch_pane = false
+
+  -- Making some convenient links.
+  config.hyperlink_rules = wezterm.default_hyperlink_rules()
+
+  local additional_rules = {
+    {
+      regex = [[(github|gh):(\S+)]],
+      format = "https://github.com/$2",
+    },
+
+    {
+      regex = [[(gitlab|gl):(\S+)]],
+      format = "https://gitlab.com/$2",
+    },
+
+    {
+      regex = [[codeberg:(\S+)]],
+      format = "https://codeberg.org/$1",
+    },
+  }
+
+  for _, v in pairs(additional_rules) do
+    table.insert(config.hyperlink_rules, v)
+  end
 
   return config
 end

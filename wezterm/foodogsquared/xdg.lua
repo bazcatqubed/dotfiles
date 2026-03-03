@@ -36,7 +36,7 @@ function M.parse_xdg_user_dirs(path)
     else
       ---@diagnostic disable-next-line: missing-parameter
       local data = string.split(d, "=", 1)
-      local basedir = data[1]:gsub("XDG_", ""):gsub("_DIR", "")
+      local basedir = data[1]:gsub("^XDG_", ""):gsub("_DIR$", "")
       res[basedir] = data[2]:gsub('^%s*"', ""):gsub('"', ""):gsub("%$(%w+)", os.getenv)
     end
 

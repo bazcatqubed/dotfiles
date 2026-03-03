@@ -79,7 +79,7 @@ function module.apply_to_config(config)
   -- Configuring the windows padding.
   config.window_padding = {
     left = 0,
-    right = "1cell",
+    right = 0,
     top = 0,
     bottom = 0,
   }
