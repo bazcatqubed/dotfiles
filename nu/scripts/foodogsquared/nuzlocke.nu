@@ -40,6 +40,7 @@ export def "config exclude-paths" --env []: [
   $env.config.nuzlocke?.exclude_paths?
   | default $env.FDS_NUZLOCKE_EXCLUDE_PATHS?
   | default (config default-exclude-paths)
+  | config normalize-exclude-paths
 }
 
 # Returns the default dataset for the Nuzlocke database.
@@ -59,9 +60,24 @@ def "config default-data" [] {
 # The reasonable default list of exclude paths.
 export def "config default-exclude-paths" --env [] {
   [ { dir: $nu.home-dir, exact: true } ]
-  | utils optional list ($env.XDG_STATE_HOME? != null) [ { dir: $env.XDG_STATE_HOME } ]
-  | utils optional list ($env.XDG_CACHE_HOME? != null) [ { dir : $env.XDG_CACHE_HOME } ]
-  | utils optional list ($env.XDG_RUNTIME_DIR? != null) [ { dir: $env.XDG_RUNTIME_DIR } ]
+  | utils optional list ($env.XDG_STATE_HOME? != null) [ $env.XDG_STATE_HOME ]
+  | utils optional list ($env.XDG_CACHE_HOME? != null) [ $env.XDG_CACHE_HOME ]
+  | utils optional list ($env.XDG_RUNTIME_DIR? != null) [ $env.XDG_RUNTIME_DIR ]
+}
+
+# Normalize the given exclusion list. As an implementation detail, this simply
+# converts a string (mainly used for convenience) into the correct schema.
+export def "config normalize-exclude-paths" []: [
+  list -> table
+  table -> table
+] {
+  $in | each { |p|
+    let t = $p | describe
+
+    if $t == "string" {
+      { dir: $p }
+    } else $p
+  }
 }
 
 # Create the initial setup for the application.
@@ -110,12 +126,15 @@ def "dir score" [p: record] {
   }
 }
 
-# See if the given path is excluded from the blocklist.
-def "dir is-excluded" [p: string]: [
+# See if the given path is excluded from the blocklist. If no input is given,
+# it will automatically retrieve the exclude paths from `config exclude-paths`.
+def "dir is-excluded" [
+  p: string # The given path.
+]: [
   table -> bool
   nothing -> bool
 ] {
-  let exclude_paths = $in | default config exclude-paths
+  let exclude_paths = $in | default (config exclude-paths)
 
   $exclude_paths | any { |e|
     if ($e.exact? | default false) {
