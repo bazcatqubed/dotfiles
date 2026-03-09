@@ -39,4 +39,9 @@ $env.config.keybindings ++= [
     }
 ]
 
-$env.config.history.file_format = "sqlite"
+$env.config.history = {
+    file_format: "sqlite"
+    isolation: true
+}
+
+$env.config.use_kitty_protocol = true

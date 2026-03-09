@@ -14,10 +14,10 @@ $env.config.hooks.env_change = $env.config.hooks.env_change | merge deep --strat
 }
 
 $env.FDS_NUZLOCKE_EXCLUDE_PATHS = [
-  { dir: "/nix" }
-  { dir: "/gnu" }
-  { dir: "/dev" }
-  { dir: "/proc" }
+  "/nix"
+  "/gnu"
+  "/dev"
+  "/proc"
   ...(nuzlocke config default-exclude-paths)
 ]
 
@@ -45,7 +45,7 @@ $env.config.keybindings ++= [
   {
     name: jump
     modifier: control
-    keycode: char_o
+    keycode: char_y
     mode: [ emacs, vi_normal, vi_insert ]
     event: {
       until: [
