@@ -11,19 +11,10 @@ local utils = require("foodogsquared.utils.init")
 local fds_strings = require("foodogsquared.utils.strings")
 local fds_lists = require("foodogsquared.utils.lists")
 
-local LEADER_CHAR_INDICATOR = "🏳️"
+local LEADER_CHAR_INDICATOR = utf8.char(0x21A5)
 local ZOOMED_CHAR_INDICATOR = "+"
 local SOLID_LEFT_ARROW = utf8.char(0xe0b2)
 local SOLID_RIGHT_ARROW = utf8.char(0xe0b0)
-
--- TODO: Update to consider XDG user dirs from xdg-dirs.dirs file.
-local prefixes = {
-  { xdg_env["PROJECTS"], "$PR" },
-  { xdg_env["DOCUMENTS"], "$DOC" },
-  { xdg_env["PICTURES"], "$PICS" },
-  { xdg_env["DOWNLOAD"], "$DOWN" },
-  { wezterm.home_dir, "~" },
-}
 
 function convert_to_elements(is_left, separator, colors, text_fg, cells)
   local elements = {}
@@ -53,7 +44,10 @@ function convert_to_elements(is_left, separator, colors, text_fg, cells)
   return elements
 end
 
-function M.apply_to_config(config)
+--- The entrypoint of the module.
+--- @param config any
+--- @param opts any
+function M.apply_to_config(config, opts)
   config.show_tabs_in_tab_bar = true
   config.show_new_tab_button_in_tab_bar = false
 
@@ -62,8 +56,9 @@ function M.apply_to_config(config)
   wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
     local pane = tab.active_pane
     local title = utils.basename(pane.foreground_process_name)
+    local replacements = opts.title_replacements or {}
     return {
-      { Text = " " .. title .. " " },
+      { Text = " " .. (replacements[title] or opts.default_title or title) .. " " },
     }
   end)
 
@@ -78,6 +73,7 @@ function M.apply_to_config(config)
     if mode_indicator then
       table.insert(left_cells, mode_indicator:gsub("_mode", ""):upper())
     end
+    ::end_mode_indicator::
 
     -- The position indicator. The notation is also inspired from Neovim's
     -- version where it is basically the equivalent of
@@ -112,11 +108,11 @@ function M.apply_to_config(config)
 
       location_indicator = active_tab.index + 1 .. ":" .. active_pane.index + 1 .. "/" .. #panes
       if active_pane.is_zoomed then
-        location_indicator = location_indicator .. ZOOMED_CHAR_INDICATOR
+        location_indicator = location_indicator .. (opts.indicators.zoomed or ZOOMED_CHAR_INDICATOR)
       end
     end
     if window:leader_is_active() then
-      location_indicator = location_indicator .. LEADER_CHAR_INDICATOR
+      location_indicator = location_indicator .. (opts.indicators.leader or LEADER_CHAR_INDICATOR)
     end
     table.insert(left_cells, location_indicator)
 
@@ -130,7 +126,7 @@ function M.apply_to_config(config)
 
       if type(cwd_uri) == "userdata" then
         cwd = cwd_uri.file_path
-        user_string = utils.cond(cwd_uri.username ~= "", cwd.username, utils.get_user())
+        user_string = utils.cond(cwd_uri.username ~= "", cwd_uri.username, utils.get_user())
           .. "@"
           .. (cwd_uri.host or wezterm.hostname())
       else
@@ -144,10 +140,10 @@ function M.apply_to_config(config)
         end
       end
 
-      for _, dirtuple in ipairs(prefixes) do
+      for _, dirtuple in ipairs(opts.prefixes or {}) do
         local dir = dirtuple[1]
         local prefix = dirtuple[2]
-        if fds_strings.starts_with(cwd, dir) then
+        if cwd:starts_with(dir) then
           cwd = cwd:gsub(fds_strings.escape_pattern(dir), prefix)
           goto end_cwd
         end
@@ -161,6 +157,12 @@ function M.apply_to_config(config)
       table.insert(left_cells, cwd)
       table.insert(cells, user_string)
     end
+
+    if opts.default_title then
+      local process_info = pane:get_foreground_process_info()
+      table.insert(left_cells, process_info.name)
+    end
+    ::end_optional_pname::
 
     -- The optional date component. This is only disabled in certain places
     -- where the time component would be rendered redundant.

@@ -15,9 +15,27 @@ require("config/keys").apply_to_config(config)
 require("config/appearance").apply_to_config(config)
 require("config/mux_server").apply_to_config(config)
 require("config/exec_domain").apply_to_config(config)
-require("config/bar").apply_to_config(config)
+require("config/bar").apply_to_config(config, {
+  prefixes = {
+    { xdg_env["PROJECTS"], "$PROJ" },
+    { xdg_env["DOCUMENTS"], "$DOC" },
+    { xdg_env["PICTURES"], "$PICS" },
+    { xdg_env["DOWNLOAD"], "$DOWN" },
+    { wezterm.home_dir, "~" },
+  },
 
-local wezterm = require("wezterm")
+  default_title = wezterm.nerdfonts.dev_terminal,
+
+  title_replacements = {
+    nvim = wezterm.nerdfonts.custom_neovim,
+    emacs = wezterm.nerdfonts.custom_emacs,
+    lazygit = wezterm.nerdfonts.seti_git,
+    lazydocker = wezterm.nerdfonts.fa_docker,
+    docker = wezterm.nerdfonts.fa_docker,
+    diffoscope = wezterm.nerdfonts.md_coffee,
+    nix = wezterm.nerdfonts.md_nix,
+  },
+})
 
 wezterm.plugin.require("https://github.com/mikkasendke/sessionizer.wezterm").apply_to_config(config)
 
