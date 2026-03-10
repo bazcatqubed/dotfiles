@@ -33,6 +33,9 @@ function module.apply_to_config(config)
     config.xim_im_name = "ibus"
   end
 
+  -- Use the Kitty keyboard enhancement protocol.
+  config.enable_kitty_keyboard = true
+
   -- Set up the visual bell.
   config.audible_bell = "SystemBeep"
   config.visual_bell = {
