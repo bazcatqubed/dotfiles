@@ -14,12 +14,20 @@ function M.starts_with(str, start)
   return str:sub(1, #start) == start
 end
 
+function string:starts_with(start)
+  return self:sub(1, #start) == start
+end
+
 --- Indicates whether `str` ends with `ending`.
 --- @param str string
 --- @param ending string
 --- @return boolean
 function M.ends_with(str, ending)
   return ending == "" or str:sub(-#ending) == ending
+end
+
+function string:ends_with(ending)
+  return ending == "" or self:sub(-#ending) == ending
 end
 
 ---Returns an escaped version of the string normally used for string functions
