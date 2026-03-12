@@ -18,6 +18,7 @@ local SOLID_RIGHT_ARROW = utf8.char(0xe0b0)
 
 function convert_to_elements(is_left, separator, colors, text_fg, cells)
   local elements = {}
+  local string_len = 0
   local num_cells = 0
 
   function push(text, is_last)
@@ -25,13 +26,18 @@ function convert_to_elements(is_left, separator, colors, text_fg, cells)
     local separator_color = utils.cond(is_left, colors[cell_no], colors[cell_no + 1])
     table.insert(elements, { Foreground = { Color = text_fg } })
     table.insert(elements, { Background = { Color = colors[cell_no] } })
-    table.insert(elements, { Text = " " .. text .. " " })
+
+    local content = " " .. text .. " "
+    table.insert(elements, { Text = content })
+    string_len = string_len + wezterm.column_width(content)
+
     if not is_last then
       if is_left then
         table.insert(elements, { Background = { Color = colors[cell_no + 1] } })
       end
       table.insert(elements, { Foreground = { Color = separator_color } })
       table.insert(elements, { Text = separator })
+      string_len = string_len + wezterm.column_width(separator)
     end
     num_cells = num_cells + 1
   end
@@ -41,7 +47,7 @@ function convert_to_elements(is_left, separator, colors, text_fg, cells)
     push(cell, #cells == 0)
   end
 
-  return elements
+  return elements, string_len
 end
 
 --- The entrypoint of the module.
@@ -108,11 +114,11 @@ function M.apply_to_config(config, opts)
 
       location_indicator = active_tab.index + 1 .. ":" .. active_pane.index + 1 .. "/" .. #panes
       if active_pane.is_zoomed then
-        location_indicator = location_indicator .. (opts.indicators.zoomed or ZOOMED_CHAR_INDICATOR)
+        location_indicator = location_indicator .. ZOOMED_CHAR_INDICATOR
       end
     end
     if window:leader_is_active() then
-      location_indicator = location_indicator .. (opts.indicators.leader or LEADER_CHAR_INDICATOR)
+      location_indicator = location_indicator .. LEADER_CHAR_INDICATOR
     end
     table.insert(left_cells, location_indicator)
 
@@ -158,8 +164,8 @@ function M.apply_to_config(config, opts)
       table.insert(cells, user_string)
     end
 
-    if opts.default_title then
-      local process_info = pane:get_foreground_process_info()
+    local process_info = pane:get_foreground_process_info()
+    if (opts.default_title and process_info) then
       table.insert(left_cells, process_info.name)
     end
     ::end_optional_pname::
@@ -203,8 +209,24 @@ function M.apply_to_config(config, opts)
       },
     }, 4)
 
-    window:set_right_status(wezterm.format(convert_to_elements(false, SOLID_LEFT_ARROW, accents, text_fg, cells)))
-    window:set_left_status(wezterm.format(convert_to_elements(true, SOLID_RIGHT_ARROW, accents, text_fg, left_cells)))
+    local right_widgets, rw_len = convert_to_elements(false, SOLID_LEFT_ARROW, accents, text_fg, cells)
+    window:set_right_status(wezterm.format(right_widgets))
+
+    local left_widgets, lw_len = convert_to_elements(true, SOLID_RIGHT_ARROW, accents, text_fg, left_cells)
+    local tabs = window:mux_window():tabs();
+    local mid_width = 0;
+    for idx, tab in ipairs(tabs) do
+      local title = tab:get_title();
+      mid_width = mid_width + math.floor(math.log(idx, 10)) + 1
+      mid_width = mid_width + #title + 2 -- Add the spaces around them.
+    end
+    local tab_width = window:active_tab():get_size().cols;
+    local max_left = ((tab_width - lw_len - rw_len) / 2) - mid_width
+
+    window:set_left_status(
+      wezterm.format(left_widgets)
+      .. wezterm.pad_left(" ", max_left)
+    )
   end)
 end
 
