@@ -23,13 +23,13 @@
 # SPDX-License-Identifier: MIT
 
 use std/dirs
-use ./utils.nu
+use ./utils.nu ['optional list' 'dir sanitize' 'search-paths common-converter']
 use std/util [repeat]
 
 
 # Prints the full path of the Nuzlocke database.
 export def "config db-path" --env [] {
-  $env.config.nuzlocke?.db_path?
+  $env.foodogsquared?.nuzlocke?.db_path?
   | default $env.FDS_NUZLOCKE_DB_PATH?
   | default $'($nu.data-dir? | default $'($env.HOME)/.local/share/nushell')/foodogsquared/nuzlocke.db'
 }
@@ -37,7 +37,7 @@ export def "config db-path" --env [] {
 export def "config exclude-paths" --env []: [
   nothing -> table
 ] {
-  $env.config.nuzlocke?.exclude_paths?
+  $env.foodogsquared?.nuzlocke?.exclude_paths?
   | default $env.FDS_NUZLOCKE_EXCLUDE_PATHS?
   | default (config default-exclude-paths)
   | config normalize-exclude-paths
@@ -48,21 +48,21 @@ export def "config exclude-paths" --env []: [
 # As of this writing, it simply adds the home directory and various XDG base
 # directories.
 def "config default-data" [] {
-  utils optional list ($env.XDG_DOCUMENTS_DIR? != null) [ $env.XDG_DOCUMENTS_DIR ]
-  | utils optional list ($env.XDG_DOWNLOAD_DIR? != null) [ $env.XDG_DOWNLOAD_DIR ]
-  | utils optional list ($env.XDG_PICTURES_DIR? != null) [ $env.XDG_PICTURES_DIR ]
-  | utils optional list ($env.XDG_VIDEOS_DIR? != null) [ $env.XDG_VIDEOS_DIR ]
-  | utils optional list ($env.XDG_MUSIC_DIR? != null) [ $env.XDG_MUSIC_DIR ]
-  | utils optional list ($env.XDG_DESKTOP_DIR? != null) [ $env.XDG_DESKTOP_DIR ]
-  | utils optional list ($env.XDG_PUBLICSHARE_DIR? != null) [ $env.XDG_PUBLICSHARE_DIR ]
+  optional list ($env.XDG_DOCUMENTS_DIR? != null) [ $env.XDG_DOCUMENTS_DIR ]
+  | optional list ($env.XDG_DOWNLOAD_DIR? != null) [ $env.XDG_DOWNLOAD_DIR ]
+  | optional list ($env.XDG_PICTURES_DIR? != null) [ $env.XDG_PICTURES_DIR ]
+  | optional list ($env.XDG_VIDEOS_DIR? != null) [ $env.XDG_VIDEOS_DIR ]
+  | optional list ($env.XDG_MUSIC_DIR? != null) [ $env.XDG_MUSIC_DIR ]
+  | optional list ($env.XDG_DESKTOP_DIR? != null) [ $env.XDG_DESKTOP_DIR ]
+  | optional list ($env.XDG_PUBLICSHARE_DIR? != null) [ $env.XDG_PUBLICSHARE_DIR ]
 }
 
 # The reasonable default list of exclude paths.
 export def "config default-exclude-paths" --env [] {
   [ { dir: $nu.home-dir, exact: true } ]
-  | utils optional list ($env.XDG_STATE_HOME? != null) [ $env.XDG_STATE_HOME ]
-  | utils optional list ($env.XDG_CACHE_HOME? != null) [ $env.XDG_CACHE_HOME ]
-  | utils optional list ($env.XDG_RUNTIME_DIR? != null) [ $env.XDG_RUNTIME_DIR ]
+  | optional list ($env.XDG_STATE_HOME? != null) [ $env.XDG_STATE_HOME ]
+  | optional list ($env.XDG_CACHE_HOME? != null) [ $env.XDG_CACHE_HOME ]
+  | optional list ($env.XDG_RUNTIME_DIR? != null) [ $env.XDG_RUNTIME_DIR ]
 }
 
 # Normalize the given exclusion list. As an implementation detail, this simply
@@ -91,7 +91,7 @@ export def setup [] {
       CREATE TABLE [main] (
         'path' TEXT UNIQUE NOT NULL,
         'score' REAL NOT NULL DEFAULT 0.0,
-        'last_accessed' DATETIME DEFAULT (datetime('now', 'localtime'))
+        'last_accessed' TEXT DEFAULT (datetime('now', 'localtime'))
       ) STRICT;
 
       -- Make a covering index because why not.
@@ -153,7 +153,7 @@ export def add [...paths: string,
   nothing -> table
 ] {
   let exclude_paths = config exclude-paths
-  let paths: list<string> = $in | default $paths | each { |p| utils dir sanitize $p } | where { |p|
+  let paths: list<string> = $in | default $paths | each { |p| dir sanitize $p } | where { |p|
     not ($exclude_paths | dir is-excluded $p)
   }
 
@@ -196,7 +196,7 @@ export def remove [...paths: string@dirs-context]: [
 ] {
   if not (config db-path | path exists) { setup }
 
-  let paths: list<string> = $in | default $paths | each { |p| $p | utils dir sanitize }
+  let paths: list<string> = $in | default $paths | each { |p| $p | dir sanitize }
   let db_script = "DELETE FROM main WHERE " + ("path = ?" | repeat ($paths | length) | str join "OR ") + " RETURNING *"
 
   open (config db-path) | query db $db_script --params $paths
@@ -317,5 +317,20 @@ def normalize []: [
   $in | each { |dir|
     $dir
     | update last_accessed { $in | into datetime }
+  }
+}
+
+export-env {
+  $env.ENV_CONVERSIONS = $env.ENV_CONVERSIONS | merge deep --strategy=append {
+    FDS_NUZLOCKE_EXCLUDE_PATHS: {
+      from_string: { $in | from json | config normalize-exclude-paths },
+      to_string: { $in | config normalize-exclude-paths | to json },
+    }
+  }
+
+  $env.config.hooks.env_change = $env.config.hooks.env_change | merge deep --strategy=append {
+    PWD: [
+      { |before, after| add $after }
+    ]
   }
 }

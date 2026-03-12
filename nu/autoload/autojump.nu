@@ -4,14 +4,8 @@
 
 use foodogsquared/nuzlocke.nu
 
-alias z = nuzlocke jump
-alias zl = nuzlocke list --link
-
-$env.config.hooks.env_change = $env.config.hooks.env_change | merge deep --strategy=append {
-  PWD: [
-    { |before, after| nuzlocke add $after }
-  ]
-}
+export alias z = nuzlocke jump
+export alias zl = nuzlocke list --link
 
 $env.FDS_NUZLOCKE_EXCLUDE_PATHS = [
   "/nix"
