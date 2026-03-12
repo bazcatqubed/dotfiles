@@ -107,6 +107,7 @@ function module.apply_to_config(config)
     { key = "^", mods = keymod, action = act.ActivateLastTab },
     { key = "b", mods = keymod, action = act.RotatePanes("CounterClockwise") },
     { key = "s", mods = keymod, action = act.PaneSelect({ mode = "SwapWithActive" }) },
+    { key = "x", mods = keymod, action = act.PaneSelect({ mode = "Activate" }) },
 
     -- More pane-related niceties.
     { key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
@@ -212,6 +213,7 @@ function module.apply_to_config(config)
       { key = "l", action = act.ActivatePaneDirection("Next") },
       { key = "n", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
       { key = "s", action = act.PaneSelect({ mode = "SwapWithActive" }) },
+      { key = "x", action = act.PaneSelect({ mode = "Activate" }) },
     },
 
     tab = {

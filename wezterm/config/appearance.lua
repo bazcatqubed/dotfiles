@@ -65,6 +65,7 @@ function module.apply_to_config(config)
 
   -- Disable some more annoyances.
   config.enable_tab_bar = true
+  config.use_fancy_tab_bar = true
   config.tab_bar_at_bottom = false
   config.show_close_tab_button_in_tabs = false
   config.quick_select_remove_styling = true
