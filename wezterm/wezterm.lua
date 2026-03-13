@@ -2,10 +2,10 @@
 --
 -- SPDX-License-Identifier: MIT
 
-local config = require("wezterm").config_builder() ---@type Config
+local wezterm = require("wezterm")
+local config = wezterm.config_builder() ---@type Config
 
-local xdg_utils = require("foodogsquared/xdg")
-xdg_env = xdg_utils.parse_xdg_user_dirs()
+xdg_env = require("foodogsquared/xdg").parse_xdg_user_dirs()
 
 config:set_strict_mode(true)
 
@@ -39,6 +39,53 @@ require("foodogsquared.foobazbar").apply_to_config(config, {
     nix = wezterm.nerdfonts.md_nix,
   },
 })
+
+do
+  local sources = {
+    (function ()
+      return {
+        { label = config.default_workspace or "default", priority = 1000 }
+      }
+    end)
+  }
+  local foodogsquared_utils = require("foodogsquared.utils")
+
+  --- Generating directories from Nuzlocke.
+  if os.execute("nu --version") then
+    table.insert(sources,
+      (function()
+        local paths = wezterm.serde.json_decode(
+          require("foodogsquared.utils.shell")
+          .capture_nu("use foodogsquared/nuzlocke.nu; nuzlocke list | get path | reverse | to json")
+        )
+
+        for i, v in ipairs(paths) do
+          paths[i] = {
+            id = ("nuzlocke:" .. foodogsquared_utils.basename(v)),
+            label = wezterm.format({
+              { Foreground = { AnsiColor = "Green" } },
+              { Text = "[Nuzlocke]" },
+              "ResetAttributes",
+              { Text = " " .. v },
+            }),
+            spawn = {
+              cwd = v,
+            },
+            priority = 750 + i,
+          }
+        end
+
+        return paths
+      end)
+    )
+  end
+
+  require("foodogsquared.ankh").apply_to_config(config, {
+    set_default_keybindings = true,
+    sources = sources,
+  })
+end
+
 
 wezterm.plugin.require("https://github.com/mikkasendke/sessionizer.wezterm").apply_to_config(config)
 
