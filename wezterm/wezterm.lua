@@ -15,7 +15,8 @@ require("config/keys").apply_to_config(config)
 require("config/appearance").apply_to_config(config)
 require("config/mux_server").apply_to_config(config)
 require("config/exec_domain").apply_to_config(config)
-require("config/bar").apply_to_config(config, {
+
+require("foodogsquared.foobazbar").apply_to_config(config, {
   prefixes = {
     { xdg_env["PROJECTS"], "$PROJ" },
     { xdg_env["DOCUMENTS"], "$DOC" },
@@ -32,6 +33,8 @@ require("config/bar").apply_to_config(config, {
     lazygit = wezterm.nerdfonts.seti_git,
     lazydocker = wezterm.nerdfonts.fa_docker,
     docker = wezterm.nerdfonts.fa_docker,
+    ["docker-compose"] = wezterm.nerdfonts.fa_docker,
+    cargo = wezterm.nerdfonts.dev_rust,
     diffoscope = wezterm.nerdfonts.md_coffee,
     nix = wezterm.nerdfonts.md_nix,
   },

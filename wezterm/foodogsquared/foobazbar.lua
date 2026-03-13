@@ -1,10 +1,18 @@
+--- A custom bar that comes with a bunch of niceties including:
+--- - An ala-Vim indicator for the mode.
+--- - An indicator for the current working directory including the ability to make aliases of them.
+--- - The centered tab bar.
+--- - An optional clock (only appears in certain desktop environments).
+--- - An indicator for the scope, user, and the workspace.
+---
+--- This is based from
+--- https://github.com/wezterm/wezterm/issues/500#issuecomment-792202306 or
+--- https://wezterm.org/config/lua/window/set_right_status.html.
+
 -- SPDX-FileCopyrightText: 2025-2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
 --
 -- SPDX-License-Identifier: MIT
 
--- The local bar configuration. This is based from
--- https://github.com/wezterm/wezterm/issues/500#issuecomment-792202306 or
--- https://wezterm.org/config/lua/window/set_right_status.html.
 local M = {}
 local wezterm = require("wezterm")
 local utils = require("foodogsquared.utils.init")
