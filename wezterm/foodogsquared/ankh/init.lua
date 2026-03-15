@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 -- Ankh is my custom session manager implementation for Wezterm that gives more
 -- of your current setup (e.g., workspaces, tab) to life. (Eh, eh, get it.).
 --

@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 local M = {}
 
 function M.execute_nu(exe)

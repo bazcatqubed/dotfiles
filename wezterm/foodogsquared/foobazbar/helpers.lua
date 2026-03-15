@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 local M = {}
 
 local LEADER_CHAR_INDICATOR = utf8.char(0x21A5)
