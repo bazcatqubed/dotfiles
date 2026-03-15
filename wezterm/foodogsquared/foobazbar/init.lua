@@ -69,7 +69,7 @@ function M.apply_to_config(config, opts)
 
   config.status_update_interval = 1000
 
-  wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+  wezterm.on("format-tab-title", function(tab)
     local pane = tab.active_pane
     local title = utils.basename(pane.foreground_process_name)
     local replacements = opts.title_replacements or {}

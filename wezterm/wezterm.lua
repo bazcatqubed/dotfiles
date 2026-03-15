@@ -84,9 +84,7 @@ do
               "ResetAttributes",
               { Text = " " .. v },
             }),
-            spawn = {
-              cwd = v,
-            },
+            spawn = { cwd = v, },
             priority = 750 + i,
           }
         end

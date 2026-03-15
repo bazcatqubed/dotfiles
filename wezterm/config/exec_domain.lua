@@ -216,6 +216,7 @@ function M.apply_to_config(config)
 
     config.default_domain = "scoped"
   end
+  ::end_systemd_scope::
 
   if os.execute("podman --version") then
     local success, stdout, _ = wezterm.run_child_process({

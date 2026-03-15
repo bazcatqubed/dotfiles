@@ -14,13 +14,12 @@ local theme_dir = xdg_data_home .. "/base16/bark-on-a-tree"
 local light_scheme, light_scheme_metadata = wezterm.color.load_base16_scheme(theme_dir .. "/albino-bark-on-a-tree.yaml")
 local dark_theme, dark_theme_metadata = wezterm.color.load_base16_scheme(theme_dir .. "/bark-on-a-tree.yaml")
 
-local function scheme_for_appearance()
-  -- We're just following the default XDG appearance spec.
-  local scheme = wezterm.gui.get_appearance()
-  if scheme == "Dark" then
-    return dark_theme_metadata.name
-  else
+local function scheme_for_appearance(appearance)
+  appearance = appearance or wezterm.gui.get_appearance()
+  if appearance:find("Light") then
     return light_scheme_metadata.name
+  else
+    return dark_theme_metadata.name
   end
 end
 
@@ -71,12 +70,6 @@ function module.apply_to_config(config)
   config.quick_select_remove_styling = true
   config.window_decorations = "NONE"
 
-  -- Configuring the appearance of the tab bar.
-  config.window_frame = {
-    font = config.font,
-    font_size = config.font_size,
-  }
-
   -- Configuring the windows padding.
   config.window_padding = {
     left = 0,
@@ -96,6 +89,26 @@ function module.apply_to_config(config)
       },
     },
   }
+
+  wezterm.on("window-config-reloaded", function (window, pane)
+    local overrides = window:get_config_overrides() or {}
+    local appearance = window:get_appearance()
+    local scheme = scheme_for_appearance(appearance)
+    if overrides.color_scheme ~= scheme then
+      overrides.color_scheme = scheme
+      window:set_config_overrides(overrides)
+    end
+  end)
+
+  wezterm.on("mux-startup", function (window, pane)
+    local overrides = window:get_config_overrides() or {}
+    local appearance = window:get_appearance()
+    local scheme = scheme_for_appearance(appearance)
+    if overrides.color_scheme ~= scheme then
+      overrides.color_scheme = scheme
+      window:set_config_overrides(overrides)
+    end
+  end)
 
   return config
 end

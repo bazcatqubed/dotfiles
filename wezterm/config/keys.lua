@@ -131,13 +131,15 @@ function module.apply_to_config(config)
     { key = "t", mods = keymod, action = act.ShowTabNavigator },
     { mods = alt_keymod, key = "h", action = act.ActivateTabRelative(-1) },
     { mods = alt_keymod, key = "j", action = act.ActivateTab(-1) },
+    { key = "Tab", mods = "CTRL", action = act.ActivateTabRelative(-1) },
     { mods = alt_keymod, key = "k", action = act.ActivateTab(0) },
     { mods = alt_keymod, key = "l", action = act.ActivateTabRelative(1) },
+    { key = "Tab", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },
     { key = "d", mods = alt_keymod, action = act.CloseCurrentTab({ confirm = false }) },
 
     -- Workspace navigation
-  { key = ">", mods = keymod, action = act.SwitchWorkspaceRelative(1) },
-  { key = "<", mods = keymod, action = act.SwitchWorkspaceRelative(-1) },
+    { key = ">", mods = keymod, action = act.SwitchWorkspaceRelative(1) },
+    { key = "<", mods = keymod, action = act.SwitchWorkspaceRelative(-1) },
 
     -- Hints and quick selections
     {

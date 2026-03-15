@@ -141,7 +141,7 @@ end
 ---
 --- @return string?
 function M.workspace_and_domain_indicator(opts, _, pane)
-    return require("wezterm").mux.get_active_workspace() .. ":" .. pane:get_domain_name()
+    return require("wezterm").mux.get_active_workspace() .. utf8.char(0x1CC90) .. pane:get_domain_name()
 end
 
 --- Optional battery component.
