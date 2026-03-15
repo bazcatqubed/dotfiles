@@ -16,29 +16,45 @@ require("config/appearance").apply_to_config(config)
 require("config/mux_server").apply_to_config(config)
 require("config/exec_domain").apply_to_config(config)
 
-require("foodogsquared.foobazbar").apply_to_config(config, {
-  prefixes = {
-    { xdg_env["PROJECTS"], "$PROJ" },
-    { xdg_env["DOCUMENTS"], "$DOC" },
-    { xdg_env["PICTURES"], "$PICS" },
-    { xdg_env["DOWNLOAD"], "$DOWN" },
-    { wezterm.home_dir, "~" },
-  },
+do
+  local helpers = require("foodogsquared.foobazbar.helpers")
+  require("foodogsquared.foobazbar").apply_to_config(config, {
+    prefixes = {
+      { xdg_env["PROJECTS"], "$PROJ" },
+      { xdg_env["DOCUMENTS"], "$DOC" },
+      { xdg_env["PICTURES"], "$PICS" },
+      { xdg_env["DOWNLOAD"], "$DOWN" },
+      { wezterm.home_dir, "~" },
+    },
 
-  default_title = wezterm.nerdfonts.dev_terminal,
+    left_cells = {
+      helpers.mode_indicator,
+      helpers.mux_position_indicator,
+      helpers.working_dir_indicator,
+      helpers.process_info,
+    },
 
-  title_replacements = {
-    nvim = wezterm.nerdfonts.custom_neovim,
-    emacs = wezterm.nerdfonts.custom_emacs,
-    lazygit = wezterm.nerdfonts.seti_git,
-    lazydocker = wezterm.nerdfonts.fa_docker,
-    docker = wezterm.nerdfonts.fa_docker,
-    ["docker-compose"] = wezterm.nerdfonts.fa_docker,
-    cargo = wezterm.nerdfonts.dev_rust,
-    diffoscope = wezterm.nerdfonts.md_coffee,
-    nix = wezterm.nerdfonts.md_nix,
-  },
-})
+    right_cells = {
+      helpers.clock_block,
+      helpers.user_indicator,
+      helpers.workspace_and_domain_indicator,
+    },
+
+    default_title = wezterm.nerdfonts.dev_terminal,
+
+    title_replacements = {
+      nvim = wezterm.nerdfonts.custom_neovim,
+      emacs = wezterm.nerdfonts.custom_emacs,
+      lazygit = wezterm.nerdfonts.seti_git,
+      lazydocker = wezterm.nerdfonts.fa_docker,
+      docker = wezterm.nerdfonts.fa_docker,
+      ["docker-compose"] = wezterm.nerdfonts.fa_docker,
+      cargo = wezterm.nerdfonts.dev_rust,
+      diffoscope = wezterm.nerdfonts.md_coffee,
+      nix = wezterm.nerdfonts.md_nix,
+    },
+  })
+end
 
 do
   local sources = {

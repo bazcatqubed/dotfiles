@@ -5,6 +5,7 @@
 local M = {}
 
 local fds_str = require("foodogsquared/utils/strings")
+local fds_lists = require("foodogsquared.utils.lists")
 local wezterm = require("wezterm")
 
 --- Given a name of a XDG user directory including the user base directories
@@ -57,6 +58,27 @@ function M.parse_xdg_user_dirs(path)
   end
 
   return res
+end
+
+--- Checks whether the current desktop is in one of the items in the given
+--- denylist (with a default list if none was given).
+---
+--- This is primarily used to create conditional components in the status bar.
+---
+--- @param denylist table?
+--- @return boolean
+function M.is_in_desktop_denylist(denylist)
+  local current_desktop = os.getenv("XDG_CURRENT_DESKTOP") or ""
+
+  -- Pretty much all of the desktop setups I personally use. The ones with
+  -- `one.foodogsquared` are basically properly configured custom desktop
+  -- sessions configured with a proper session manager and everything.
+  denylist = denylist or { "GNOME", "KDE", "one%.foodogsquared%.%w+" }
+
+  return
+    not fds_lists.any(function(_, desktop)
+      return current_desktop:match(desktop)
+    end, denylist)
 end
 
 return M
