@@ -17,6 +17,16 @@ local fds_xdg = require("foodogsquared.xdg")
 
 local M = {}
 
+--- @alias AnkhSource AnkhCallback[]
+--- @alias ResolvedAnkhSource string[]
+--- @alias AnkhOptions { state_directory: string, set_default_keybindings: boolean, sources: AnkhSource }
+--- @alias AnkhCallback function(AnkhOptions, Wezterm.Window, Wezterm.Pane, string[])
+
+--- Convert a [AnkhSet] to a table of suitable parameters for Wezterm's input
+--- selector.
+---
+--- @param c AnkhSet
+--- @return table
 local function convert_to_choices(c)
   local r = {}
 
@@ -27,6 +37,10 @@ local function convert_to_choices(c)
   return r
 end
 
+--- Set the configuration alongside the given plugin option.
+---
+--- @param config any
+--- @param opts AnkhOptions
 function M.apply_to_config(config, opts)
   local state_directory = opts.state_directory
     or (fds_xdg.xdg_user_dir("XDG_STATE_HOME") .. "/foodogsquared/ankh")

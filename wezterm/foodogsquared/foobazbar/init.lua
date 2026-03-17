@@ -55,7 +55,7 @@ end
 
 --- The entrypoint of the module.
 --- @param config any
---- @param opts any
+--- @param opts FooBazBarOptions
 function M.apply_to_config(config, opts)
   config.show_tabs_in_tab_bar = true
   config.show_new_tab_button_in_tab_bar = false
@@ -130,5 +130,9 @@ function M.apply_to_config(config, opts)
     )
   end)
 end
+
+--- @alias FooBazBarOptions { default_title: string, left_cells: BarCallback[], right_cells: BarCallback[], prefixes: DirPrefixes, title_replacements: table }
+--- @alias DirPrefixes table
+--- @alias BarCallback function(FooBazBarOptions, Wezterm.Window, Wezterm.Pane)
 
 return M
