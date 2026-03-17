@@ -57,49 +57,17 @@ do
 end
 
 do
-  local sources = {
-    (function ()
-      return {
-        { label = config.default_workspace or "default", priority = 1000 }
-      }
-    end)
-  }
-  local foodogsquared_utils = require("foodogsquared.utils")
-
-  --- Generating directories from Nuzlocke.
-  if os.execute("nu --version") then
-    table.insert(sources,
-      (function()
-        local paths = wezterm.serde.json_decode(
-          require("foodogsquared.utils.shell")
-          .capture_nu("use foodogsquared/nuzlocke.nu; nuzlocke list | get path | reverse | to json")
-        )
-
-        for i, v in ipairs(paths) do
-          paths[i] = {
-            id = ("nuzlocke:" .. foodogsquared_utils.basename(v)),
-            label = wezterm.format({
-              { Foreground = { AnsiColor = "Green" } },
-              { Text = "[Nuzlocke]" },
-              "ResetAttributes",
-              { Text = " " .. v },
-            }),
-            spawn = { cwd = v, },
-            priority = 750 + i,
-          }
-        end
-
-        return paths
-      end)
-    )
-  end
+  local ankh_generators = require("foodogsquared.ankh.generators")
 
   require("foodogsquared.ankh").apply_to_config(config, {
     set_default_keybindings = true,
-    sources = sources,
+    sources = {
+      ankh_generators.nuzlocke_paths,
+      ankh_generators.ankh_scripts,
+      ankh_generators.default_workspace,
+    },
   })
 end
-
 
 wezterm.plugin.require("https://github.com/mikkasendke/sessionizer.wezterm").apply_to_config(config)
 

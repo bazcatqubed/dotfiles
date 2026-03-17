@@ -50,9 +50,9 @@ function M.apply_to_config(config, opts)
 
     local default_keybinds = {
       {
-        key = "m",
+        key = "s",
         mods = "LEADER",
-        action = M.show(opts.sources or {}),
+        action = M.show(opts),
       },
     }
 
@@ -64,7 +64,11 @@ function M.apply_to_config(config, opts)
   return config
 end
 
-function M.show(sources)
+--- Creates an input selector.
+---
+--- @param opts AnkhOptions
+--- @return WeztermCallback
+function M.show(opts)
   return wezterm.action_callback(function(window, pane)
     local choices = {}
     local workspaces = wezterm.mux.get_workspace_names()
@@ -72,12 +76,12 @@ function M.show(sources)
     -- No worrying too much for the outputs, they'll be normalized at the end
     -- of the process anyways. Values with a function/table are expected to be
     -- normalized already though.
-    for _, v in pairs(sources) do
+    for _, v in pairs(opts.sources or {}) do
       local t = type(v)
       if t == "string" then
         table.insert(choices, v)
       elseif t == "function" then
-        local cc = v(window, pane, workspaces)
+        local cc = v(opts, window, pane, workspaces)
         for _, vl in ipairs(cc) do
           table.insert(choices, vl)
         end
@@ -96,19 +100,24 @@ function M.show(sources)
             return
           end
 
-          inner_window:perform_action(
-            wezterm.action.SwitchToWorkspace {
-              name =  id,
-              spawn = choices[id].spawn or {},
-            },
-            inner_pane
-          )
+          local choice = choices[id]
+          local action = choice.action or nil
+          local t = type(action)
+
+          if t == "function" then
+            choice.action(opts, window, pane)
+          else
+            inner_window:perform_action(
+              action,
+              inner_pane
+            )
+          end
         end),
-        title = 'Workspace selection',
+        title = 'Select a menu item',
         choices = convert_to_choices(choices),
         fuzzy = true,
         fuzzy_description = "Search: ",
-        description = 'Switch to workspace.',
+        description = 'Launch a menu item',
       },
       pane
     )
