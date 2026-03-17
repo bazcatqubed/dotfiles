@@ -65,6 +65,7 @@ do
       ankh_generators.nuzlocke_paths,
       ankh_generators.ankh_scripts,
       ankh_generators.default_workspace,
+      ankh_generators.spawn_domain_tabs(config.exec_domains or {}),
     },
   })
 end

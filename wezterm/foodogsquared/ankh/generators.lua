@@ -22,7 +22,7 @@ end
 
 --- Generator for a bunch of Ankh-specific layout files which is just a
 --- [SpawnCommand].
-function M.ankh_scripts(pluginConfig, window, pane)
+function M.ankh_scripts(pluginConfig)
   local wezterm = require("wezterm")
   local foodogsquared_utils = require("foodogsquared.utils")
   local foodogsquared_shell = require("foodogsquared.utils.shell")
@@ -88,6 +88,33 @@ function M.nuzlocke_paths()
   end
 
   return paths
+end
+
+function M.spawn_domain_tabs(exec_domains)
+  local wezterm = require("wezterm")
+
+  return function (_, window, pane)
+    local r = {}
+
+    for i, k in ipairs(exec_domains) do
+      local domain = wezterm.mux.get_domain(k.name)
+      table.insert(r, {
+        id = "domain:" .. k.name,
+        label = wezterm.format({
+          { Foreground = { AnsiColor = "Blue" } },
+          { Text = "[ExecDomain]" },
+          "ResetAttributes",
+          { Text = " " .. domain:label() },
+        }),
+        action = wezterm.action.SpawnCommandInNewTab {
+          cwd = pane:get_current_working_dir().file_path,
+          domain = { DomainName = k.name },
+        },
+      })
+    end
+
+    return r
+  end
 end
 
 return M
