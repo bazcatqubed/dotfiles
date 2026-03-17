@@ -28,7 +28,7 @@ function M.ankh_scripts(pluginConfig)
   local foodogsquared_shell = require("foodogsquared.utils.shell")
   local EXTENSION = ".lua"
 
-  local layout_dir = pluginConfig.layout_dir or (wezterm.config_dir .. "/ankh/layouts")
+  local layout_dir = pluginConfig.layout_dir or (wezterm.config_dir .. "/ankh/scripts")
   local layout_files = wezterm.serde.json_decode(
     foodogsquared_shell.capture_nu(string.format("glob '%s/*%s' | to json", layout_dir, EXTENSION))
   )
@@ -45,7 +45,7 @@ function M.ankh_scripts(pluginConfig)
     layout_files[i] = {
       label = wezterm.format({
         { Foreground = { AnsiColor = "Red" } },
-        { Text = "[Ankh Layout]" },
+        { Text = "[Ankh Script]" },
         "ResetAttributes",
         { Text = " " .. label },
       }),
