@@ -4,21 +4,9 @@
 
 local utils = require("foodogsquared.utils.init")
 local fds_strings = require("foodogsquared.utils.strings")
+local fds_containers = require("foodogsquared.utils.containers")
 local wezterm = require("wezterm")
 local M = {}
-
---- Return a list of containers that are currently running.
---- @param data table
---- @return table
-local function podman_list_running_containers(data)
-  local containers = {}
-  for _, image in ipairs(data) do
-    if image.State == "running" then
-      containers[image.Id] = image.Names[0]
-    end
-  end
-  return containers
-end
 
 --- Return a list of container IDs from my custom images.
 --- @param data table
@@ -30,51 +18,6 @@ local function podman_list_custom_images(data)
       containers[image.Id] = image.Names[0]
     end
   end
-  return containers
-end
-
---- Return a list of container IDs and their names.
---- @param data table
---- @return table
-local function distrobox_list_images(data)
-  local containers = {}
-
-  for _, value in ipairs(data) do
-    local labels = value.Labels or {}
-    local manager = labels.manager or ""
-    if manager ~= "distrobox" then
-      goto continue
-    end
-
-    if value.Id and value.Names then
-      containers[value.Id] = value.Names[1]
-    end
-    ::continue::
-  end
-
-  return containers
-end
-
---- Return a list of valid toolbox containers' IDs and their names.
---- @param data table
---- @return table
-local function toolbox_list_images(data)
-  local containers = {}
-  for _, value in ipairs(data) do
-    local labels = value.Labels or {}
-    local isToolboxContainer = labels["com.github.containers.toolbox"]
-      or labels["com.github.debarshiray.toolbox"]
-      or "false"
-    if isToolboxContainer ~= "true" then
-      goto continue
-    end
-
-    if value.Id and value.Names then
-      containers[value.Id] = value.Names[1]
-    end
-    ::continue::
-  end
-
   return containers
 end
 
@@ -90,8 +33,9 @@ local function make_podman_label_func(id)
     local running = stdout == "true\n"
     local color = running and "Green" or "Red"
     return wezterm.format({
+      { Text = "Podman container named " },
       { Foreground = { AnsiColor = color } },
-      { Text = "Podman container named " .. name },
+      { Text = name },
     })
   end
 end
@@ -211,7 +155,7 @@ function M.apply_to_config(config)
         cmd.args = wrapped
 
         return cmd
-      end)
+      end, "systemd-run environment")
     )
 
     config.default_domain = "scoped"
@@ -219,20 +163,13 @@ function M.apply_to_config(config)
   ::end_systemd_scope::
 
   if os.execute("podman --version") then
-    local success, stdout, _ = wezterm.run_child_process({
-      "podman",
-      "ps",
-      "--all",
-      "--format",
-      "json",
-    })
-    if not success then
+    local containers = fds_containers.podman_ps()
+
+    if containers == nil then
       goto end_podman
     end
 
-    local containers = wezterm.json_parse(stdout)
-
-    for id, name in pairs(podman_list_running_containers(containers)) do
+    for id, name in pairs(fds_containers.podman_list_running_containers(containers)) do
       table.insert(
         config.exec_domains,
         wezterm.exec_domain("podman:" .. name, make_podman_fixup_func(id), make_podman_label_func(id))
@@ -247,7 +184,7 @@ function M.apply_to_config(config)
     end
 
     if os.execute("distrobox --version") then
-      for id, name in pairs(distrobox_list_images(containers)) do
+      for id, name in pairs(fds_containers.distrobox_list_images(containers)) do
         table.insert(
           config.exec_domains,
           wezterm.exec_domain("distrobox:" .. name, make_distrobox_fixup_func(name), make_podman_label_func(id))
@@ -256,7 +193,7 @@ function M.apply_to_config(config)
     end
 
     if os.execute("toolbox --version") then
-      for id, name in pairs(toolbox_list_images(containers)) do
+      for id, name in pairs(fds_containers.toolbox_list_images(containers)) do
         table.insert(
           config.exec_domains,
           wezterm.exec_domain("toolbox:" .. name, make_toolbox_fixup_func(name), make_podman_label_func(id))
