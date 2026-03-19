@@ -90,31 +90,29 @@ function M.nuzlocke_paths()
   return paths
 end
 
-function M.spawn_domain_tabs(exec_domains)
+function M.spawn_domain_tabs(pluginConfig, window, pane)
   local wezterm = require("wezterm")
+  local r = {}
+  local config = window:effective_config()
 
-  return function (_, window, pane)
-    local r = {}
-
-    for i, k in ipairs(exec_domains) do
-      local domain = wezterm.mux.get_domain(k.name)
-      table.insert(r, {
-        id = "domain:" .. k.name,
-        label = wezterm.format({
-          { Foreground = { AnsiColor = "Blue" } },
-          { Text = "[ExecDomain]" },
-          "ResetAttributes",
-          { Text = " " .. domain:label() },
-        }),
-        action = wezterm.action.SpawnCommandInNewTab {
-          cwd = pane:get_current_working_dir().file_path,
-          domain = { DomainName = k.name },
-        },
-      })
-    end
-
-    return r
+  for _, k in ipairs(config.exec_domains) do
+    local domain = wezterm.mux.get_domain(k.name)
+    table.insert(r, {
+      id = "domain:" .. k.name,
+      label = wezterm.format({
+        { Foreground = { AnsiColor = "Blue" } },
+        { Text = "[ExecDomain]" },
+        "ResetAttributes",
+        { Text = " " .. domain:label() },
+      }),
+      action = wezterm.action.SpawnCommandInNewTab {
+        cwd = pane:get_current_working_dir().file_path,
+        domain = { DomainName = k.name },
+      },
+    })
   end
+
+  return r
 end
 
 return M

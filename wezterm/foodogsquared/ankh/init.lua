@@ -20,7 +20,7 @@ local M = {}
 --- @alias AnkhSource AnkhCallback[]
 --- @alias ResolvedAnkhSource string[]
 --- @alias AnkhOptions { state_directory: string, set_default_keybindings: boolean, sources: AnkhSource }
---- @alias AnkhCallback function(AnkhOptions, Wezterm.Window, Wezterm.Pane, string[])
+--- @alias AnkhCallback string | table | function(AnkhOptions, Wezterm.Window, Wezterm.Pane)
 
 --- Convert a [AnkhSet] to a table of suitable parameters for Wezterm's input
 --- selector.
@@ -71,7 +71,6 @@ end
 function M.show(opts)
   return wezterm.action_callback(function(window, pane)
     local choices = {}
-    local workspaces = wezterm.mux.get_workspace_names()
 
     -- No worrying too much for the outputs, they'll be normalized at the end
     -- of the process anyways. Values with a function/table are expected to be
@@ -81,7 +80,7 @@ function M.show(opts)
       if t == "string" then
         table.insert(choices, v)
       elseif t == "function" then
-        local cc = v(opts, window, pane, workspaces)
+        local cc = v(opts, window, pane)
         for _, vl in ipairs(cc) do
           table.insert(choices, vl)
         end

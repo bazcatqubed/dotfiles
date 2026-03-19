@@ -137,6 +137,8 @@ function module.apply_to_config(config)
     { key = "Tab", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },
     { key = "d", mods = alt_keymod, action = act.CloseCurrentTab({ confirm = false }) },
 
+  { key = "d", mods = "LEADER", action = act.ShowLauncherArgs({ flags = "WORKSPACES|DOMAINS|FUZZY" })},
+
     -- Workspace navigation
     { key = ">", mods = keymod, action = act.SwitchWorkspaceRelative(1) },
     { key = "<", mods = keymod, action = act.SwitchWorkspaceRelative(-1) },
