@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: 2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+#
+# SPDX-License-Identifier: MIT
+
+[build-system]
+build-backend = 'mesonpy'
+requires = [
+    "meson-python >= 0.18.0",
+    "meson >= 1",
+]
+
+[project]
+name = 'foodogsquared-nautilus-python-extensions'
+version = '0.1.0'
+description = "foodogsquared's set of custom nautilus-python extensions"
+license = {file = '../LICENSES/GPL-3.0-or-later.txt'}
+requires-python = ">=3.12"
+authors = [
+  {name = 'Gabriel Arazas', email = 'foodogsquared@foodogsquared.one'},
+]

@@ -1,0 +1,9 @@
+// SPDX-FileCopyrightText: 2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+//
+// SPDX-License-Identifier: MIT
+
+= foodogsquared's custom nautilus-python extensions
+:toc:
+
+A personal set of https://github.com/GNOME/nautilus-python[nautilus-python] extensions.
+You can either install it through https://mesonbuild.com/[Meson build system] or just test your luck by directly installing them at `$XDG_DATA_HOME/nautilus-python/extensions` (you'll have to keep in mind some of the extensions might need them third-party Python modules though).
