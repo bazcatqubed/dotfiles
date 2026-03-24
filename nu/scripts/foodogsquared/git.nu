@@ -17,8 +17,8 @@ export def ls-ignored --wrapped [...paths: string,
 }
 
 # Returns a list of files that have changed in the current worktree.
-export def what-files-have-changed [] {
-  ^git diff-index --name-only HEAD | lines
+export def what-files-have-changed --wrapped [...rest: string] {
+  ^git diff-index --name-only ...$rest | lines
 }
 
 # List all of the files recognized by Git.

@@ -45,3 +45,8 @@ $env.config.history = {
 }
 
 $env.config.use_kitty_protocol = true
+
+# Just a neat shortcut for the editor.
+export def --env --wrapped e [...rest: string] {
+  run-external $env.EDITOR ...$rest
+}

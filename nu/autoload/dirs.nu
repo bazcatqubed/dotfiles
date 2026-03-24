@@ -31,17 +31,12 @@ $env.config.keybindings ++= [
     {
         name: dirs_prev
         modifier: control
-        keycode: char_h
+        keycode: Backspace
         mode: [emacs vi_normal vi_insert]
         event: [
             {
                 send: ExecuteHostCommand
                 cmd: "dirs prev"
-            }
-
-            {
-                send: ExecuteHostCommand
-                cmd: "cd -"
             }
         ]
     }

@@ -214,7 +214,7 @@ export def query [...q: string,
   let paths = $q | where {|it| ($it | path expand) == $it }
 
   if $q == [] {
-    return (main)
+    return (list)
   }
 
   try {
