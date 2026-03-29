@@ -1,0 +1,6 @@
+syntax = "Lua51"
+indent_width = 2
+indent_type = "Spaces"
+
+[sort_requires]
+enabled = true
