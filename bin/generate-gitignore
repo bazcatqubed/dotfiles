@@ -12,9 +12,12 @@ def main [] {
 
   let cache_file = $'($env.XDG_CACHE_HOME? | default $'($env.HOME)/.cache')/gitignore-io.langs.json'
   if ($cache_file | path exists) {
-    let cache_file = ls $cache_file
-    if ((date now) - $cache_file.modified.0) < 1wk {
-      $gitignore_object = open $cache_file.name.0
+    let cache_file = ls $cache_file | get 0
+    if ((date now) - $cache_file.modified) < 1wk {
+      $gitignore_object = open $cache_file.name
+    } else {
+      $gitignore_object = http get "https://gitignore.io/api/list?format=json"
+      $gitignore_object | save --force $cache_file.name
     }
   } else {
     $gitignore_object = http get "https://gitignore.io/api/list?format=json"
@@ -22,6 +25,6 @@ def main [] {
   }
 
   $gitignore_object | values | sort-by key
-  | input list "Languages: " --multi --display key
+  | input list "Languages: " --fuzzy --multi --display key
   | reduce --fold "" { |it, acc| $acc + $it.contents }
 }

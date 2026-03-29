@@ -12,7 +12,7 @@
 def main [
     ...paths,
 
-    --reuse-args: list<string> = [ ], # Additional arguments to be passed to the generated `reuse` command.
+    --reuse-args: string = "", # Additional arguments to be passed to the generated `reuse` command.
 
     --contributor: string, # Override the contributor.
 
@@ -24,7 +24,7 @@ def main [
 
     --json, # Generates a JSON object usable for external scripts.
 
-    --force-current-date = false, # Force the current date for the end year of the range.
+    --force-current-date, # Force the current date for the end year of the range.
 ] {
   let commands = $paths | par-each { |f|
     # TODO: Get signed-off and co-authored contributors
@@ -39,7 +39,7 @@ def main [
     | group-by author
     | update cells { |v|
         $v | get date
-        | append (if $force_current_date { [ (date now) ] } else { [ ] })
+        | prepend (if $force_current_date { [ (date now | format date "%F %T") ] } else { [ ] })
         | get (($in | length) - 1) 0
         | each { |d| $d | date from-human | format date "%Y" }
         | uniq
@@ -51,7 +51,7 @@ def main [
       mut cmd = [
         "reuse" "annotate"
         "--copyright" $k "--year" $v
-        ...$reuse_args
+        ...($reuse_args | split words)
       ]
 
       if $license != null {
