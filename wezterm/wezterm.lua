@@ -59,7 +59,7 @@ end
 do
   local ankh_generators = require("foodogsquared.ankh.generators")
 
-  local ankhOptions = {
+  local ankh_options = {
     set_default_keybindings = true,
     sources = {
       ankh_generators.nuzlocke_paths,
@@ -69,10 +69,8 @@ do
     },
   }
 
-  require("foodogsquared.ankh").apply_to_config(config, ankhOptions)
+  require("foodogsquared.ankh").apply_to_config(config, ankh_options)
 end
-
-wezterm.plugin.require("https://github.com/mikkasendke/sessionizer.wezterm").apply_to_config(config)
 
 wezterm.plugin.require("https://github.com/mrjones2014/smart-splits.nvim").apply_to_config(config, {
   direction_keys = { "h", "j", "k", "l" },

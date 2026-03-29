@@ -5,6 +5,7 @@ return function (pluginConfig, window, pane)
 
   local inner_tab, inner_pane, inner_window = window:mux_window():spawn_tab({
     cwd = cwd_uri.file_path,
+    args = { os.getenv("EDITOR") or "nvim" },
     domain = pluginConfig.default_domain or nil,
   })
 

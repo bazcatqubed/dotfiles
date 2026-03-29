@@ -27,24 +27,36 @@ function M.is_empty(s)
   return s == nil or s == ""
 end
 
----Return the user name from the current Wezterm environment.
----@return string
+--- Return the user name from the current Wezterm environment.
+--- @return string
 function M.get_user()
   return os.getenv("USER") or os.getenv("LOGNAME") or os.getenv("USERNAME") or nil
 end
 
----Create a conditional where it returns either of the given values whether the
----condition returns true or false.
----@param cond boolean
----@param T any
----@param F any
----@return any
+--- Create a conditional where it returns either of the given values whether the
+--- condition returns true or false.
+--- @param cond boolean
+--- @param T any
+--- @param F any
+--- @return any
 function M.cond(cond, T, F)
   if cond then
     return T
   else
     return F
   end
+end
+
+--- Check if we're in a NixOS system.
+---
+--- @return boolean
+function M.is_in_nixos()
+  local f = io.open("/etc/NIXOS", "r")
+  if f ~= nil then
+    return true
+  end
+
+  return false
 end
 
 return M
