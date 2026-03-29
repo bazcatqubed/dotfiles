@@ -2,9 +2,13 @@
 #
 # SPDX-License-Identifier: MIT
 
-[formatter.lua]
+[formatter.wezterm]
 command = "stylua"
-includes = [ "*.lua" ]
+includes = [ "wezterm/*.lua" ]
+
+[formatter.neovim]
+command = "stylua"
+includes = [ "nvim/*.lua" ]
 
 [formatter.nu]
 command = "nufmt"
