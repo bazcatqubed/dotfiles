@@ -33,12 +33,10 @@ function module.setup()
   vim.cmd("highlight Visual term=reverse cterm=reverse")
 
   -- Basic keybindings
-  vim.keymap.set("n", "<leader>bd", ":bd<cr>", {})
+  vim.keymap.set("n", "<leader>x", ":bd<cr>", { desc = "Delete buffer" })
   vim.keymap.set("i", "jk", "<Esc>", { desc = "Escape" })
-  vim.keymap.set("n", "<leader>hr", "<cmd>source $MYVIMRC<cr>", {})
 
-  vim.keymap.set("n", "<leader>x", ":.lua<CR>", { desc = "Execute Lua under cursor" })
-  vim.keymap.set("v", "<leader>x", ":lua<CR>", { desc = "Execute Lua under cursor" })
+  vim.keymap.del("n", "gcc")
 end
 
 return module
