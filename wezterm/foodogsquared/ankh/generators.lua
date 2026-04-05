@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2026 Gabriel Arazas <foodogsquared@foodogsquared.one>
+--
+-- SPDX-License-Identifier: MIT
+
 --- A set of generators for Ankh. All functions here have a callback signature
 --- of [AnkhOptions], [Wezterm.Window], and [Wezterm.Pane] in
 --- that order.
