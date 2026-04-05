@@ -72,12 +72,4 @@ do
   require("foodogsquared.ankh").apply_to_config(config, ankh_options)
 end
 
-wezterm.plugin.require("https://github.com/mrjones2014/smart-splits.nvim").apply_to_config(config, {
-  direction_keys = { "h", "j", "k", "l" },
-  modifiers = {
-    resize = "META",
-  },
-  log_level = "off",
-})
-
 return config
