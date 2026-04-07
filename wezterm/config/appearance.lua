@@ -3,7 +3,7 @@
 -- SPDX-License-Identifier: MIT
 
 -- This module should set the appearance-related options.
-local module = {}
+local M = {}
 
 local wezterm = require("wezterm")
 
@@ -23,7 +23,7 @@ local function scheme_for_appearance(appearance)
   end
 end
 
-function module.add_base16_scheme_to_config(path, config)
+function M.add_base16_scheme_to_config(path, config)
   local scheme, metadata = wezterm.color.load_base16_scheme(path)
   config.color_schemes[metadata.name] = scheme
 
@@ -32,7 +32,7 @@ end
 
 --- Apply the configuration with the given table.
 -- @param config: the table containing Wezterm configuration.
-function module.apply_to_config(config)
+function M.apply_to_config(config)
   config.color_schemes = {}
 
   config.font_size = 16
@@ -93,4 +93,4 @@ function module.apply_to_config(config)
   return config
 end
 
-return module
+return M

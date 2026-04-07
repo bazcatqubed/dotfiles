@@ -2,12 +2,12 @@
 --
 -- SPDX-License-Identifier: MIT
 
-local module = {}
+local M = {}
 local wezterm = require("wezterm")
 local io = require("io")
 local os = require("os")
 
-function module.apply_to_config(config)
+function M.apply_to_config(config)
   wezterm.on("view-last-output-in-new-pane", function(_, pane)
     local zones = pane:get_semantic_zones("Output")
     local last_zone = zones[#zones]
@@ -46,4 +46,4 @@ function module.apply_to_config(config)
   end)
 end
 
-return module
+return M

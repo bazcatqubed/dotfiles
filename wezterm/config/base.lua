@@ -3,11 +3,11 @@
 -- SPDX-License-Identifier: MIT
 
 -- A local jumpstart for creating my base configuration.
-local module = {}
+local M = {}
 
 local wezterm = require("wezterm")
 
-function module.apply_to_config(config)
+function M.apply_to_config(config)
   -- Quick select-related options. Quite similar to Kitty hints which is
   -- nice.
   config.quick_select_patterns = {
@@ -78,7 +78,7 @@ end
 -- keymod is to assign it as a "global modifier" for the Wezterm program since
 -- usual modifiers like CTRL and ALT are typically used for programs like Vim
 -- and Emacs. It's quite similar to tmux's prefix key for its keybindings.
-module.keymod = "CTRL|SHIFT"
-module.alt_keymod = "CTRL|SHIFT|ALT"
+M.keymod = "CTRL|SHIFT"
+M.alt_keymod = "CTRL|SHIFT|ALT"
 
-return module
+return M

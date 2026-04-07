@@ -3,9 +3,9 @@
 -- SPDX-License-Identifier: MIT
 
 -- A configuration set for remote multiplexer-related options.
-local module = {}
+local M = {}
 
-function module.apply_to_config(config)
+function M.apply_to_config(config)
   config.unix_domains = {
     { name = "unix" },
   }
@@ -20,4 +20,4 @@ function module.apply_to_config(config)
   return config
 end
 
-return module
+return M

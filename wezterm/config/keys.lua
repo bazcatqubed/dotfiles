@@ -8,7 +8,7 @@ local act = wezterm.action
 
 local keymod = base.keymod
 local alt_keymod = base.alt_keymod
-local module = {}
+local M = {}
 
 local copy_mode = nil
 if wezterm.gui then
@@ -35,7 +35,7 @@ if wezterm.gui then
   })
 end
 
-function module.apply_to_config(config)
+function M.apply_to_config(config)
   -- I'm very used to setting <SPACE> as the leader so I'm continuing the tradition.
   config.leader = { key = "Space", mods = keymod, timeout_milliseconds = 1000 }
 
@@ -248,4 +248,4 @@ function module.apply_to_config(config)
   return config
 end
 
-return module
+return M
