@@ -190,7 +190,7 @@ export def add [...paths: string,
 }
 
 # Remove a path from the Nuzlocke database.
-export def remove [...paths: string@dirs-context]: [
+export def remove [...paths: string@"context dirs"]: [
   list<string> -> table
   nothing -> table
 ] {
@@ -264,7 +264,7 @@ export def list [
   } else { $in }
 }
 
-def dirs-context [] {
+def "context dirs" [] {
   {
     options: {
       case_sensitive: false,
@@ -276,7 +276,7 @@ def dirs-context [] {
 }
 
 # Go to the nearest match as the working directory.
-export def jump --env [...q: string@dirs-context] {
+export def jump --env [...q: string@"context dirs"] {
   let path = search ...$q
 
   if $path == null {
