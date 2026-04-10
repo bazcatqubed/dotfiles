@@ -53,3 +53,14 @@ export def get-date-from-files [...rest: string] {
 export def get-complete-user [] {
   $"(^git config user.name) <(^git config user.email)>"
 }
+
+# Pull the patch files from a list of pull requests from the GitHub remote.
+export def "github pull-patches" [] {
+  let gh_prs: table = ^gh pr list --json id,title,url,number | from json
+
+  if ($gh_prs | length) > 0 {
+    $gh_prs | input list --fuzzy --multi --display title | each {
+      |p| $p | get url | http get $'($in).patch' | save --force $"gh-patch-($p.number).patch"
+    }
+  }
+}
