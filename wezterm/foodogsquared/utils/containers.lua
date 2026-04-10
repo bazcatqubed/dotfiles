@@ -4,8 +4,8 @@
 
 local M = {}
 
-local wezterm = require("wezterm")
 local fds_strings = require("foodogsquared.utils.strings")
+local wezterm = require("wezterm")
 
 M.prefixes = {
   distrobox = "distrobox:",
@@ -33,9 +33,7 @@ function M.podman_ps()
   end
 end
 
-function M.label_names(containers, exec_domains)
-  
-end
+function M.label_names(containers, exec_domains) end
 
 --- Return a list of containers that are currently running.
 ---

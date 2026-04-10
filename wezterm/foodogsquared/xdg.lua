@@ -4,8 +4,8 @@
 
 local M = {}
 
-local fds_str = require("foodogsquared/utils/strings")
 local fds_lists = require("foodogsquared.utils.lists")
+local fds_str = require("foodogsquared/utils/strings")
 local wezterm = require("wezterm")
 
 --- Given a name of a XDG user directory including the user base directories
@@ -75,10 +75,9 @@ function M.is_in_desktop_denylist(denylist)
   -- sessions configured with a proper session manager and everything.
   denylist = denylist or { "GNOME", "KDE", "one%.foodogsquared%.%w+" }
 
-  return
-    not fds_lists.any(function(_, desktop)
-      return current_desktop:match(desktop)
-    end, denylist)
+  return not fds_lists.any(function(_, desktop)
+    return current_desktop:match(desktop)
+  end, denylist)
 end
 
 return M

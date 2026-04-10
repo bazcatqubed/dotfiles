@@ -17,10 +17,10 @@ function M.default_workspace(config, pluginConfig)
     {
       label = default_ws,
       priority = 10000,
-      action = wezterm.action.SwitchToWorkspace {
-        name = default_ws
-      },
-    }
+      action = wezterm.action.SwitchToWorkspace({
+        name = default_ws,
+      }),
+    },
   }
 end
 
@@ -69,8 +69,9 @@ function M.nuzlocke_paths()
   local wezterm = require("wezterm")
   local foodogsquared_utils = require("foodogsquared.utils")
   local paths = wezterm.serde.json_decode(
-    require("foodogsquared.utils.shell")
-    .capture_nu("use foodogsquared/nuzlocke.nu; nuzlocke list | get path | reverse | to json")
+    require("foodogsquared.utils.shell").capture_nu(
+      "use foodogsquared/nuzlocke.nu; nuzlocke list | get path | reverse | to json"
+    )
   )
 
   for i, v in ipairs(paths) do
@@ -83,10 +84,10 @@ function M.nuzlocke_paths()
         "ResetAttributes",
         { Text = " " .. v },
       }),
-      action = wezterm.action.SwitchToWorkspace {
+      action = wezterm.action.SwitchToWorkspace({
         name = id,
-        spawn = { cwd = v }
-      },
+        spawn = { cwd = v },
+      }),
       priority = 750 + i,
     }
   end
@@ -109,10 +110,10 @@ function M.spawn_domain_tabs(pluginConfig, window, pane)
         "ResetAttributes",
         { Text = " " .. domain:label() },
       }),
-      action = wezterm.action.SpawnCommandInNewTab {
+      action = wezterm.action.SpawnCommandInNewTab({
         cwd = pane:get_current_working_dir().file_path,
         domain = { DomainName = k.name },
-      },
+      }),
     })
   end
 

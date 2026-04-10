@@ -4,7 +4,7 @@
 
 local wezterm = require("wezterm")
 
-return function (pluginConfig, window, pane)
+return function(pluginConfig, window, pane)
   local cwd_uri = pane:get_current_working_dir()
 
   local inner_tab, inner_pane, inner_window = window:mux_window():spawn_tab({

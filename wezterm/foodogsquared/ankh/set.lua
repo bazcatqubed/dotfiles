@@ -25,14 +25,14 @@ do
   function setmt:ordered_pairs()
     local keys = {}
     for k, v in pairs(self) do
-      keys[#keys+1] = { priority = v.priority, name = k }
+      keys[#keys + 1] = { priority = v.priority, name = k }
     end
-    table.sort(keys, function (a, b)
+    table.sort(keys, function(a, b)
       return a.priority > b.priority
     end)
 
     local i = 0
-    return function ()
+    return function()
       i = i + 1
       if keys[i] then
         return keys[i].name, self[keys[i].name]

@@ -12,8 +12,8 @@
 -- - https://github.com/mikkasendke/sessionizer.wezterm
 -- - https://github.com/tmux-plugins/tmux-resurrect
 
-local wezterm = require("wezterm")
 local fds_xdg = require("foodogsquared.xdg")
+local wezterm = require("wezterm")
 
 local M = {}
 
@@ -42,8 +42,7 @@ end
 --- @param config any
 --- @param opts AnkhOptions
 function M.apply_to_config(config, opts)
-  local state_directory = opts.state_directory
-    or (fds_xdg.xdg_user_dir("XDG_STATE_HOME") .. "/foodogsquared/ankh")
+  local state_directory = opts.state_directory or (fds_xdg.xdg_user_dir("XDG_STATE_HOME") .. "/foodogsquared/ankh")
 
   if opts.set_default_keybindings or false then
     config.keys = config.keys or {}
@@ -93,7 +92,7 @@ function M.show(opts)
     choices = M.normalize(choices)
 
     return window:perform_action(
-      wezterm.action.InputSelector {
+      wezterm.action.InputSelector({
         action = wezterm.action_callback(function(inner_window, inner_pane, id, label)
           if not label and not id then
             return
@@ -106,18 +105,15 @@ function M.show(opts)
           if t == "function" then
             choice.action(opts, window, pane)
           else
-            inner_window:perform_action(
-              action,
-              inner_pane
-            )
+            inner_window:perform_action(action, inner_pane)
           end
         end),
-        title = 'Select a menu item',
+        title = "Select a menu item",
         choices = convert_to_choices(choices),
         fuzzy = true,
         fuzzy_description = "Search: ",
-        description = 'Launch a menu item',
-      },
+        description = "Launch a menu item",
+      }),
       pane
     )
   end)

@@ -3,9 +3,9 @@
 -- SPDX-License-Identifier: MIT
 
 local M = {}
-local wezterm = require("wezterm")
 local io = require("io")
 local os = require("os")
+local wezterm = require("wezterm")
 
 function M.apply_to_config(config)
   wezterm.on("view-last-output-in-new-pane", function(_, pane)

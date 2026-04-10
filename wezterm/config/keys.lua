@@ -2,8 +2,8 @@
 --
 -- SPDX-License-Identifier: MIT
 
-local wezterm = require("wezterm") ---@type Wezterm
 local base = require("config/base")
+local wezterm = require("wezterm") ---@type Wezterm
 local act = wezterm.action
 
 local keymod = base.keymod
@@ -137,7 +137,7 @@ function M.apply_to_config(config)
     { key = "Tab", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },
     { key = "d", mods = alt_keymod, action = act.CloseCurrentTab({ confirm = false }) },
 
-  { key = "d", mods = "LEADER", action = act.ShowLauncherArgs({ flags = "WORKSPACES|DOMAINS|FUZZY" })},
+    { key = "d", mods = "LEADER", action = act.ShowLauncherArgs({ flags = "WORKSPACES|DOMAINS|FUZZY" }) },
 
     -- Workspace navigation
     { key = ">", mods = keymod, action = act.SwitchWorkspaceRelative(1) },

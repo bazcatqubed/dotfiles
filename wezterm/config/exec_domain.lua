@@ -2,9 +2,9 @@
 --
 -- SPDX-License-Identifier: MIT
 
-local utils = require("foodogsquared.utils.init")
-local fds_strings = require("foodogsquared.utils.strings")
 local fds_containers = require("foodogsquared.utils.containers")
+local fds_strings = require("foodogsquared.utils.strings")
+local utils = require("foodogsquared.utils.init")
 local wezterm = require("wezterm")
 local M = {}
 

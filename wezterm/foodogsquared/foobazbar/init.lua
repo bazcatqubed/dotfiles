@@ -14,9 +14,9 @@
 -- SPDX-License-Identifier: MIT
 
 local M = {}
-local wezterm = require("wezterm")
-local utils = require("foodogsquared.utils.init")
 local fds_lists = require("foodogsquared.utils.lists")
+local utils = require("foodogsquared.utils.init")
+local wezterm = require("wezterm")
 local SOLID_LEFT_ARROW = utf8.char(0xe0b2)
 local SOLID_RIGHT_ARROW = utf8.char(0xe0b0)
 
@@ -113,19 +113,11 @@ function M.apply_to_config(config, opts)
       }, num)
     end
 
-    local right_widgets, rw_len = convert_to_elements(
-      false, SOLID_LEFT_ARROW,
-      fds_lists.reverse(accents(#right_cells)),
-      text_fg, right_cells
-    )
+    local right_widgets, rw_len =
+      convert_to_elements(false, SOLID_LEFT_ARROW, fds_lists.reverse(accents(#right_cells)), text_fg, right_cells)
     window:set_right_status(wezterm.format(right_widgets))
 
-    local left_widgets, lw_len = convert_to_elements(
-      true,
-      SOLID_RIGHT_ARROW,
-      accents(#left_cells),
-      text_fg, left_cells
-    )
+    local left_widgets, lw_len = convert_to_elements(true, SOLID_RIGHT_ARROW, accents(#left_cells), text_fg, left_cells)
     local tabs = window:mux_window()
     local max_left = 0
     if tabs then
@@ -136,14 +128,11 @@ function M.apply_to_config(config, opts)
         mid_width = mid_width + math.floor(math.log(idx, 10)) + 1
         mid_width = mid_width + #title + 2 -- Add the spaces around them.
       end
-      local tab_width = window:active_tab():get_size().cols;
+      local tab_width = window:active_tab():get_size().cols
       max_left = ((tab_width - lw_len - rw_len) / 2) - mid_width
     end
 
-    window:set_left_status(
-      wezterm.format(left_widgets)
-      .. wezterm.pad_left(" ", max_left)
-    )
+    window:set_left_status(wezterm.format(left_widgets) .. wezterm.pad_left(" ", max_left))
   end)
 end
 

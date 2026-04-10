@@ -108,8 +108,8 @@ function M.user_indicator(_, _, pane)
   local cwd_uri = pane:get_current_working_dir()
   if type(cwd_uri) == "userdata" then
     user_string = fds_utils.cond(cwd_uri.username ~= "", cwd_uri.username, fds_utils.get_user())
-    .. "@"
-    .. (cwd_uri.host or wezterm.hostname())
+      .. "@"
+      .. (cwd_uri.host or wezterm.hostname())
   end
 
   return user_string
@@ -135,7 +135,7 @@ end
 --- @return string?
 function M.process_info(opts, window, pane)
   local process_info = pane:get_foreground_process_info()
-  if (opts.default_title and process_info) then
+  if opts.default_title and process_info then
     return process_info.name
   end
 end
@@ -145,7 +145,7 @@ end
 ---
 --- @return string?
 function M.workspace_and_domain_indicator(opts, _, pane)
-    return require("wezterm").mux.get_active_workspace() .. utf8.char(0x1CC90) .. pane:get_domain_name()
+  return require("wezterm").mux.get_active_workspace() .. utf8.char(0x1CC90) .. pane:get_domain_name()
 end
 
 --- Optional battery component.
