@@ -4,15 +4,28 @@
 
 # Link files from the dotfiles directory to the given path. This is mostly used
 # on projects that uses configuration ad-hoc such as Git hooks.
-export def link-from [dotdir_path: string, path: string] {
-  with-env {
-    "FDS_DOTDIR": ($env.FDS_DOTDIR? | default $'($env.XDG_PROJECTS_DIR)/packages/dotfiles')
-  } {
-    ^ln --symbolic --force $'($env.FDS_DOTDIR)/($dotdir_path)' $path
+export def link-from [
+  dotdir_path: string@"context file-from-dotdir", # The path relative to the dotdir.
+  path: string # The output path.
+] {
+  ^ln --symbolic --force $'(main)/($dotdir_path)' $path
+}
+
+def "context file-from-dotdir" [context: string] {
+  {
+    options: {
+      case_sensitive: false,
+      completion_algorithm: substring,
+      sort: false,
+    },
+    completions: (glob $"(main)/**/*" --exclude [ **/.git/** **/.jj/** ] | each { $in | path relative-to (main) })
   }
 }
 
 # Return the dotfiles directory.
-export def main [] {
-  $env.FDS_DOTDIR? | default $'($env.XDG_PROJECTS_DIR)/dotfiles'
+export def main --env [] {
+  $env.foodogsquared?.dotdir?
+  | default $env.FDS_DOTDIR?
+  | default $'($env.XDG_PROJECTS_DIR)/dotfiles'
 }
+export alias config-dir = main
