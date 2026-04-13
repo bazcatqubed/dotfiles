@@ -4,6 +4,9 @@
 
 local _fds = require("../foodogsquared")
 
+-- Disable Conjure documentation for now.
+vim.g["conjure#mapping#doc_word"] = false
+
 vim.pack.add({
   -- Forcing your editor to socialize with the langauges more.
   "https://github.com/kkharji/sqlite.lua",
@@ -18,7 +21,7 @@ vim.pack.add({
   "https://github.com/stevearc/oil.nvim",
 
   -- Symbolic explorer.
-  "https://github.com/bassamsdata/namu.nvim"
+  "https://github.com/bassamsdata/namu.nvim",
 })
 
 require("oil").setup({
@@ -29,7 +32,7 @@ require("oil").setup({
   },
 })
 
-vim.keymap.set({ "n" }, "-", function ()
+vim.keymap.set({ "n" }, "-", function()
   require("oil").open()
 end, { desc = "Open file explorer on current directory" })
 vim.keymap.set({ "n" }, "<C-->", function()
@@ -48,6 +51,3 @@ vim.keymap.set({ "n", "x", "o" }, "<c-space>", function()
     },
   })
 end, { desc = "Treesitter incremental selection" })
-
-vim.keymap.set({ "n", "i", "v" }, "<C-m>", "<cmd>Namu symbols<CR>", { desc = "List symbols" })
-vim.keymap.set({ "n", "i", "v" }, "<C-S-m>", "<cmd>Namu workspace<CR>", { desc = "List symbols workspace-wide" })

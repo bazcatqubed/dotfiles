@@ -63,7 +63,7 @@ vim.keymap.set("n", picker_prefix("F"), function()
 end, { desc = "Select files in current directory" })
 
 vim.keymap.set("n", picker_prefix("g"), Snacks.picker.grep, { desc = "Grep in project directory" })
-vim.keymap.set("n", picker_prefix("G"), function ()
+vim.keymap.set("n", picker_prefix("G"), function()
   Snacks.picker.grep({ cwd = vim.fn.expand("%:p:h") })
 end, { desc = "Grep in current directory" })
 
@@ -88,7 +88,7 @@ vim.keymap.set("n", "<leader>c", Snacks.picker.diagnostics, { desc = "List all d
 vim.keymap.set("n", "<leader>C", Snacks.picker.diagnostics_buffer, { desc = "List current diagnostics" })
 
 vim.keymap.set("n", "<leader>g", Snacks.lazygit.open, { desc = "Open Lazygit" })
-vim.keymap.set("n", picker_prefix("A"), function ()
+vim.keymap.set("n", picker_prefix("A"), function()
   Snacks.picker.resume()
 end, { desc = "Resume last search" })
 vim.keymap.set("n", picker_prefix("h"), Snacks.picker.help, { desc = "Help pages" })
