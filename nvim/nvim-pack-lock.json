@@ -13,6 +13,10 @@
       "rev": "a459c8fbf51359902971874b5ebe05f6602db8b4",
       "src": "https://github.com/saghen/blink.lib"
     },
+    "canola.nvim": {
+      "rev": "b904468fc8d4f79fe4b4dbbdcccb0e4f44e64857",
+      "src": "https://github.com/barrettruth/canola.nvim"
+    },
     "conjure": {
       "rev": "f66b3e7f45d325bd556cd785502761e583971920",
       "src": "https://github.com/Olical/conjure"
@@ -85,10 +89,6 @@
       "rev": "c72328a5494b4502947a022fe69c0c47e53b6aa6",
       "src": "https://github.com/nvim-tree/nvim-web-devicons"
     },
-    "oil.nvim": {
-      "rev": "0fcc83805ad11cf714a949c98c605ed717e0b83e",
-      "src": "https://github.com/stevearc/oil.nvim"
-    },
     "outline.nvim": {
       "rev": "c293eb56db880a0539bf9d85b4a27816960b863e",
       "src": "https://github.com/hedyhli/outline.nvim"
@@ -105,6 +105,10 @@
       "rev": "6fbceceb8966620da8970b727b6daa358b982805",
       "src": "https://github.com/aaronik/treewalker.nvim"
     },
+    "undotree": {
+      "rev": "6fa6b57cda8459e1e4b2ca34df702f55242f4e4d",
+      "src": "https://github.com/mbbill/undotree"
+    },
     "vim-just": {
       "rev": "11b0f3177e2854cafa0c4baef5329e7d0f0dccbd",
       "src": "https://github.com/NoahTheDuke/vim-just"
@@ -112,6 +116,10 @@
     "vim-nix": {
       "rev": "7235c7ce2cea530cb6b59bc3e46d4bfe917d15c8",
       "src": "https://github.com/LnL7/vim-nix"
+    },
+    "vim-tidal": {
+      "rev": "e440fe5bdfe07f805e21e6872099685d38e8b761",
+      "src": "https://github.com/tidalcycles/vim-tidal"
     },
     "vim-tridactyl": {
       "rev": "fdd069bde3a34c786abed4601b6d59a065590ad9",

@@ -18,7 +18,7 @@ vim.pack.add({
   "https://github.com/folke/flash.nvim",
 
   -- Put some oil on.
-  "https://github.com/stevearc/oil.nvim",
+  "https://github.com/barrettruth/canola.nvim",
 
   -- Symbolic explorer.
   "https://github.com/bassamsdata/namu.nvim",
