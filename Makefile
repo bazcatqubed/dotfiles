@@ -27,4 +27,8 @@ dry-run:
 
 .PHONY: update-nvim-lockfile
 update-nvim-lockfile:
-	git checkout -- ./nvim/lazy-lock.json && nvim --headless "+Lazy! sync" "+qa" && git commit --message "nvim: update lazy.nvim lockfile as of $(shell date "+%F")" -- ./nvim/lazy-lock.json
+	git checkout -- ./nvim/nvim-pack-lock.json && nvim --headless "+lua vim.pack.update(nil, { force = true })" "+qa" && git commit --message "nvim: update package lockfile as of $(shell date "+%F")" -- ./nvim/nvim-pack-lock.json
+
+.PHONY: reuse-check
+reuse-check:
+	reuse lint
