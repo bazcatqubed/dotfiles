@@ -7,10 +7,10 @@
 #
 # As of 2026-02-23, it expects the following config keys:
 #
-# - `$env.config.nuzlocke.db-path` is a path where the database will be stored
+# - `$env.foodogsquared.nuzlocke.db-path` is a path where the database will be stored
 # for various operations (e.g., querying for paths).
 #
-# - `$env.config.nuzlocke.exclude-paths` is a table of paths where Nuzlocke
+# - `$env.foodogsquared.nuzlocke.exclude-paths` is a table of paths where Nuzlocke
 # deny any paths listed here. For now, it is a table with the following schema:
 # ** `dir` is the path to be excluded and it is **required**.
 # ** `exact` tells whether the given path is only considered or any of the subpath.
@@ -277,7 +277,7 @@ def "context dirs" [] {
 
 # Go to the nearest match as the working directory.
 export def jump --env [...q: string@"context dirs"] {
-  let path = search ...$q
+  let path = query ...$q --limit 1 | get path | default null
 
   if $path == null {
     error make { msg: "no match found" }
