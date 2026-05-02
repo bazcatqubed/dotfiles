@@ -6,15 +6,15 @@
       "version": "2.0.0 - 3.0.0"
     },
     "blink.cmp": {
-      "rev": "456d38d1cd3743926f329204c2340f3e7840aad6",
+      "rev": "80f5dd3f11049f1c3a87557718d4e55556a0e3f5",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
-      "rev": "a459c8fbf51359902971874b5ebe05f6602db8b4",
+      "rev": "f29d8bac6549bc1e7d699c83f680823d7def98bd",
       "src": "https://github.com/saghen/blink.lib"
     },
     "canola.nvim": {
-      "rev": "b904468fc8d4f79fe4b4dbbdcccb0e4f44e64857",
+      "rev": "37fc91a54c8d05b5e6737396fc2a2257154d7241",
       "src": "https://github.com/barrettruth/canola.nvim"
     },
     "conjure": {
@@ -66,7 +66,7 @@
       "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
     },
     "nvim-lspconfig": {
-      "rev": "d10ce09e42bb0ca8600fd610c3bb58676e61208d",
+      "rev": "31026a13eefb20681124706a79fc1df6bf11ab27",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-nio": {
