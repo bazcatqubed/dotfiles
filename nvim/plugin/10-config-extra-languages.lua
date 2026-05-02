@@ -3,7 +3,7 @@
 -- SPDX-License-Identifier: MIT
 
 -- A bunch of plugins for programming languages support.
-vim.pack.add({
+local plugins = {
   -- EditorConfig plugin.
   "https://github.com/editorconfig/editorconfig-vim",
 
@@ -21,4 +21,11 @@ vim.pack.add({
 
   -- Tridactyl
   "https://github.com/tridactyl/vim-tridactyl",
-})
+}
+
+-- TidalCycles
+if os.execute("sclang -v") ~= nil then
+  table.insert(plugins, "https://github.com/tidalcycles/vim-tidal")
+end
+
+vim.pack.add(plugins)

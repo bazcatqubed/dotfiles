@@ -7,7 +7,7 @@ local _fds = require("../foodogsquared")
 -- Disable Conjure documentation for now.
 vim.g["conjure#mapping#doc_word"] = false
 
-vim.pack.add({
+local plugins = {
   -- Forcing your editor to socialize with the langauges more.
   "https://github.com/kkharji/sqlite.lua",
   "https://github.com/Olical/conjure",
@@ -22,7 +22,13 @@ vim.pack.add({
 
   -- Symbolic explorer.
   "https://github.com/bassamsdata/namu.nvim",
-})
+}
+
+if os.execute("sclang -v") ~= nil  then
+  table.insert(plugins, "https://github.com/mbbill/undotree")
+end
+
+vim.pack.add(plugins)
 
 require("oil").setup({
   default_file_explorer = true,
@@ -38,6 +44,8 @@ end, { desc = "Open file explorer on current directory" })
 vim.keymap.set({ "n" }, "<C-->", function()
   require("oil").open(vim.fn.getcwd())
 end, { desc = "Open file explorer on project directory" })
+
+vim.keymap.set({ "n" }, "<leader><F5>", vim.cmd.UndotreeToggle)
 
 local flash = require("flash")
 vim.keymap.set({ "n", "x", "v" }, "s", flash.jump, { desc = "Jump" })

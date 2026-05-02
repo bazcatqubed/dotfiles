@@ -4,6 +4,23 @@
 
 local module = {}
 
+local function jump(count)
+  return vim.diagnostic.jump({ count = count, on_jump = function(diagnostic, bufnr)
+    if not diagnostic then return end
+
+    vim.diagnostic.open_float({
+      namespace = diagnostic.namespace,
+      bufnr = bufnr,
+      scope = "cursor",
+      severity = { min = vim.diagnostic.severity.WARN },
+      severity_sort = {
+        reverse = true,
+      },
+      focus = false,
+    })
+  end })
+end
+
 function module.setup()
   vim.g["mapleader"] = " "
   vim.g["maplocalleader"] = ","
@@ -28,35 +45,23 @@ function module.setup()
   -- Basic keybindings
   vim.keymap.set("n", "<leader>x", function()
     vim.bo.buflisted = false
-    vim.api.nvim_buf_delete(0, { unload = true, force = true })
+    vim.api.nvim_buf_delete(0, { force = true })
   end, { desc = "Delete buffer" })
   vim.keymap.set("i", "jk", "<Esc>", { desc = "Escape" })
 
   vim.keymap.set("n", "gj", function ()
-    vim.diagnostic.jump({ count = vim.v.count1, on_jump = function()
-      vim.diagnostic.open_float({
-        scope = "cursor",
-        severity = { min = vim.diagnostic.severity.WARN },
-        severity_sort = {
-          reverse = true,
-        },
-      })
-    end })
+    jump(vim.v.count1)
   end, { desc = "Go to next diagnostic" })
 
   vim.keymap.set("n", "gk", function ()
-    vim.diagnostic.jump({ count = -vim.v.count1, on_jump = function()
-      vim.diagnostic.open_float({
-        scope = "cursor",
-        severity = { min = vim.diagnostic.severity.WARN },
-        severity_sort = {
-          reverse = true,
-        },
-      })
-    end, })
+    jump(-vim.v.count1)
   end, { desc = "Go to previous diagnostic" })
 
   vim.keymap.del("n", "gcc")
+  vim.diagnostic.config({
+    severity_sort = { reverse = true },
+    severity = { min = vim.diagnostic.severity.INFO },
+  })
 end
 
 return module
